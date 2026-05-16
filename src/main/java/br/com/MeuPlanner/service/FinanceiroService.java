@@ -17,21 +17,19 @@ public class FinanceiroService {
 
 
 
-    public void verificarFechamentoAutomatico(){
+    public void verificarFechamentoAutomatico() {
 
-       YearMonth mesAtual = YearMonth.now();
-       YearMonth mesAberto = YearMonth.now();
+        YearMonth mesAtual = YearMonth.now();
 
         if (ultimoMesProcessado == null) {
             ultimoMesProcessado = mesAtual;
             return;
         }
 
-        if(!mesAtual.equals(mesAberto)){
-            fecharMes(mesAberto);
-            mesAberto = mesAtual;
+        if (!mesAtual.equals(ultimoMesProcessado)) {
+            fecharMes(ultimoMesProcessado);
+            ultimoMesProcessado = mesAtual;
         }
-
     }
 
 
@@ -49,6 +47,7 @@ public class FinanceiroService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
 
+        BigDecimal saldo = totalEntradas.subtract(totalGastos);
 
         FechamentoMensal fechamento = new FechamentoMensal(
                 mes,
@@ -62,13 +61,15 @@ public class FinanceiroService {
 
 
     public BigDecimal totalEntradas() {
-        return FinanceiroRespository.getEntradasPorMes().stream()
+        YearMonth mesAtual = YearMonth.now();
+        return FinanceiroRepository.getEntradasPorMes(mesAtual).stream()
                 .map(Entrada::getValor)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public BigDecimal totalGastos() {
-        return FinanceiroRespository.getGastosPorMes().stream()
+        YearMonth mesAtual = YearMonth.now();
+        return FinanceiroRepository.getGastosPorMes(mesAtual).stream()
                 .map(Gasto::getValor)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
