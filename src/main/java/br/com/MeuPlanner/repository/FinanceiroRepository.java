@@ -1,21 +1,21 @@
 package br.com.MeuPlanner.repository;
 
 
+import java.time.YearMonth;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import br.com.MeuPlanner.model.Entrada;
 import br.com.MeuPlanner.model.FechamentoMensal;
 import br.com.MeuPlanner.model.Gasto;
 
-import java.time.YearMonth;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-
 
 public class FinanceiroRepository {
 
-    private static List<Entrada> entradas = new ArrayList<>();
-    private static List<Gasto> gastos = new ArrayList<>();
-    private static List<FechamentoMensal> fechamentos  = new ArrayList<>();
+    private static final List<Entrada> entradas = new ArrayList<>();
+    private static final List<Gasto> gastos = new ArrayList<>();
+    private static final List<FechamentoMensal> fechamentos = new ArrayList<>();
 
     public static void adicionarEntrada(Entrada entrada){
         entradas.add(entrada);

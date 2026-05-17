@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="br.com.MeuPlanner.app.DashboardController"
+            styleClass="root-pane">
+
+    <!-- Menu lateral -->
+    <left>
+        <VBox styleClass="sidebar" spacing="10" prefWidth="180">
+            <Label text="MeuPlanner" styleClass="logo"/>
+            <Button text="Dashboard"     onAction="#irDashboard"    maxWidth="Infinity"/>
+            <Button text="Contas"        onAction="#irContas"       maxWidth="Infinity"/>
+            <Button text="Lançamentos"   onAction="#irLancamentos"  maxWidth="Infinity"/>
+            <Button text="Transferências" onAction="#irTransferencias" maxWidth="Infinity"/>
+            <Button text="Categorias"    onAction="#irCategorias"   maxWidth="Infinity"/>
+            <Button text="Metas"         onAction="#irMetas"        maxWidth="Infinity"/>
+            <Button text="Relatórios"    onAction="#irRelatorios"   maxWidth="Infinity"/>
+        </VBox>
+    </left>
+
+    <!-- Conteúdo principal -->
+    <center>
+        <VBox styleClass="content" spacing="20" style="-fx-padding: 30;">
+            <Label text="Dashboard" styleClass="page-title"/>
+            <HBox spacing="20">
+                <VBox styleClass="card" prefWidth="200">
+                    <Label text="Saldo Total"/>
+                    <Label fx:id="lblSaldoTotal" text="R$ 0,00" styleClass="value-positive"/>
+                </VBox>
+                <VBox styleClass="card" prefWidth="200">
+                    <Label text="Entradas do Mês"/>
+                    <Label fx:id="lblEntradas" text="R$ 0,00" styleClass="value-positive"/>
+                </VBox>
+                <VBox styleClass="card" prefWidth="200">
+                    <Label text="Gastos do Mês"/>
+                    <Label fx:id="lblGastos" text="R$ 0,00" styleClass="value-negative"/>
+                </VBox>
+            </HBox>
+            <Label text="Alertas Ativos" styleClass="section-title"/>
+            <ListView fx:id="listaAlertas" prefHeight="150"/>
+            <Label text="Metas em Andamento" styleClass="section-title"/>
+            <ListView fx:id="listaMetas" prefHeight="150"/>
+        </VBox>
+    </center>
+</BorderPane>
