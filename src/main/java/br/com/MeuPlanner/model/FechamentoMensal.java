@@ -7,49 +7,41 @@ import java.time.YearMonth;
 public class FechamentoMensal {
 
     private Long id;
-    private YearMonth mes;
+    private YearMonth mesReferencia;
     private BigDecimal totalEntradas;
     private BigDecimal totalGastos;
     private BigDecimal saldoFinal;
     private StatusMes status;
     private LocalDate dataFechamento;
 
-    public FechamentoMensal(YearMonth mes,
-                            BigDecimal totalEntradas,
-                            BigDecimal totalGastos,
-                            BigDecimal saldoFinal) {
+    public FechamentoMensal() {}
 
-        this.mes = mes;
+    public FechamentoMensal(YearMonth mesReferencia, BigDecimal totalEntradas,
+                            BigDecimal totalGastos, BigDecimal saldoFinal) {
+        this.mesReferencia = mesReferencia;
         this.totalEntradas = totalEntradas;
         this.totalGastos = totalGastos;
         this.saldoFinal = saldoFinal;
-        this.status = saldoFinal.signum() >= 0
-                ? StatusMes.POSITIVO
-                : StatusMes.NEGATIVO;
-        this.dataFechamento = LocalDate.now();
     }
 
-    public YearMonth getMes() {
-        return mes;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public BigDecimal getTotalEntradas() {
-        return totalEntradas;
-    }
+    public YearMonth getMesReferencia() { return mesReferencia; }
+    public void setMesReferencia(YearMonth mesReferencia) { this.mesReferencia = mesReferencia; }
 
-    public BigDecimal getTotalGastos() {
-        return totalGastos;
-    }
+    public BigDecimal getTotalEntradas() { return totalEntradas; }
+    public void setTotalEntradas(BigDecimal totalEntradas) { this.totalEntradas = totalEntradas; }
 
-    public BigDecimal getSaldoFinal() {
-        return saldoFinal;
-    }
+    public BigDecimal getTotalGastos() { return totalGastos; }
+    public void setTotalGastos(BigDecimal totalGastos) { this.totalGastos = totalGastos; }
 
-    public StatusMes getStatus() {
-        return status;
-    }
+    public BigDecimal getSaldoFinal() { return saldoFinal; }
+    public void setSaldoFinal(BigDecimal saldoFinal) { this.saldoFinal = saldoFinal; }
 
-    public LocalDate getDataFechamento() {
-        return dataFechamento;
-    }
+    public StatusMes getStatus() { return status; }
+    public void setStatus(StatusMes status) { this.status = status; }
+
+    public LocalDate getDataFechamento() { return dataFechamento; }
+    public void setDataFechamento(LocalDate dataFechamento) { this.dataFechamento = dataFechamento; }
 }

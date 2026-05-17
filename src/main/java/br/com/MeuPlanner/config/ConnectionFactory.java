@@ -1,26 +1,34 @@
 package br.com.MeuPlanner.config;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class ConnectionFactory {
-    private static final String URL = "jdbc:sqlite:MeuPlanner.sqlite";
 
-    private ConnectionFactory(){
+    private static final HikariDataSource dataSource;
 
+    static {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl("jdbc:mysql://localhost:3306/meuplanner?useSSL=false&serverTimezone=UTC");
+        config.setUsername("root");
+        config.setPassword("sua_senha");
+        config.setMaximumPoolSize(10);
+        config.setMinimumIdle(2);
+        config.setConnectionTimeout(30000);
+        dataSource = new HikariDataSource(config);
     }
 
-    public static Connection getConnection(){
+    private ConnectionFactory() {}
+
+    public static Connection getConnection() {
         try {
-            return DriverManager.getConnection(URL);
-        }catch (SQLException e){
-            throw new RuntimeException("Erro ao conectar", e);
+            return dataSource.getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erro ao obter conexão", e);
         }
     }
-
-
-
-
-
 }
+

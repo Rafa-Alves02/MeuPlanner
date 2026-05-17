@@ -58,8 +58,7 @@ public class Menu {
                 LocalDate.now(),
                 TipoRecorrencia.UNICA,
                 null,
-                null
-        );
+                null);
         FinanceiroRepository.adicionarEntrada(entrada);
 
         System.out.println("Entrada adicionada!");
@@ -84,16 +83,14 @@ public class Menu {
         System.out.print("Escolha o tipo: ");
         TipoGasto tipoGasto = TipoGasto.valueOf(sc.nextLine().toUpperCase());
 
-
         Gasto gasto = new Gasto(
                 descricao,
                 BigDecimal.valueOf(valor),
-                tipoGasto,
                 LocalDate.now(),
+                tipoGasto,
                 TipoRecorrencia.UNICA,
                 null,
-                null
-        );
+                null);
 
         FinanceiroRepository.adicionarGasto(gasto);
 
@@ -116,8 +113,7 @@ public class Menu {
         if (saldo.compareTo(BigDecimal.ZERO) < 0) {
             System.out.println("Mês negativo!");
         } else if (saldo.compareTo(
-                totalEntradas.multiply(BigDecimal.valueOf(0.1))
-        ) < 0) {
+                totalEntradas.multiply(BigDecimal.valueOf(0.1))) < 0) {
             System.out.println("Mês apertado!");
         } else {
             System.out.println("Mês tranquilo!");
