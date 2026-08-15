@@ -5,10 +5,10 @@ import java.io.InputStream;
 
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -16,52 +16,88 @@ import javafx.util.Duration;
 public class SceneManager {
 
     private static Stage stage;
+    private static Parent shellRoot;
+    private static StackPane conteudoHost;
+    private static NavbarController navbarController;
     private static String telaAtual;
 
-    public static void init(Stage primaryStage) {
+    public static void init(Stage primaryStage) throws IOException {
         stage = primaryStage;
         stage.setTitle("MeuPlanner");
-        stage.setMinWidth(900);
-        stage.setMinHeight(600);
+        stage.setMinWidth(960);
+        stage.setMinHeight(640);
 
         try (InputStream icone = SceneManager.class.getResourceAsStream("/images/icon.png")) {
             if (icone != null) {
                 stage.getIcons().add(new Image(icone));
             }
-        } catch (IOException ignored) {
         }
+
+        FXMLLoader shellLoader = new FXMLLoader(SceneManager.class.getResource("/fxml/app-shell.fxml"));
+        shellRoot = shellLoader.load();
+        AppShellController shellController = shellLoader.getController();
+        conteudoHost = shellController.getConteudoHost();
+
+        aplicarCorAcento(TemaPreferences.corAcentoSalva());
+
+        Scene scene = new Scene(shellRoot, 1080, 700);
+        scene.getStylesheets().add(SceneManager.class.getResource("/css/style.css").toExternalForm());
+        stage.setScene(scene);
+        stage.show();
     }
 
     public static void navegarPara(String tela) {
         try {
             telaAtual = tela;
-            FXMLLoader loader = new FXMLLoader(
-                    SceneManager.class.getResource("/fxml/" + tela + ".fxml"));
+            FXMLLoader loader = new FXMLLoader(SceneManager.class.getResource("/fxml/" + tela + ".fxml"));
             Parent conteudo = loader.load();
+            trocarConteudo(conteudo);
 
-            Region scanlines = new Region();
-            scanlines.setMouseTransparent(true);
-            scanlines.getStyleClass().add("scanline-overlay");
-
-            StackPane raiz = new StackPane(conteudo, scanlines);
-            raiz.setOpacity(0);
-
-            Scene scene = new Scene(raiz);
-            scene.getStylesheets().add(
-                    SceneManager.class.getResource("/css/style.css").toExternalForm());
-            stage.setScene(scene);
-            stage.show();
-
-            FadeTransition fade = new FadeTransition(Duration.millis(160), raiz);
-            fade.setFromValue(0);
-            fade.setToValue(1);
-            fade.play();
+            if (navbarController != null) {
+                navbarController.marcarAtiva(tela);
+            }
         } catch (IOException e) {
             throw new RuntimeException("Erro ao carregar tela: " + tela, e);
         }
     }
 
+    static void registrarNavbar(NavbarController controller) {
+        navbarController = controller;
+    }
+
+    static void aplicarCorAcento(String corHex) {
+        if (shellRoot != null) {
+            shellRoot.setStyle("-accent-cor: " + corHex + ";");
+        }
+    }
+
     public static String getTelaAtual() {
         return telaAtual;
+    }
+
+    private static void trocarConteudo(Parent novoConteudo) {
+        novoConteudo.setOpacity(0);
+
+        if (conteudoHost.getChildren().isEmpty()) {
+            conteudoHost.getChildren().add(novoConteudo);
+            fade(novoConteudo, 0, 1, 180, null);
+            return;
+        }
+
+        Node atual = conteudoHost.getChildren().get(0);
+        fade(atual, 1, 0, 120, () -> {
+            conteudoHost.getChildren().setAll(novoConteudo);
+            fade(novoConteudo, 0, 1, 160, null);
+        });
+    }
+
+    private static void fade(Node node, double de, double para, int millis, Runnable aoTerminar) {
+        FadeTransition transicao = new FadeTransition(Duration.millis(millis), node);
+        transicao.setFromValue(de);
+        transicao.setToValue(para);
+        if (aoTerminar != null) {
+            transicao.setOnFinished(e -> aoTerminar.run());
+        }
+        transicao.play();
     }
 }

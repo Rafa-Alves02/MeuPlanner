@@ -3,39 +3,29 @@
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="br.com.MeuPlanner.app.MetasController"
-            styleClass="root-pane">
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="br.com.MeuPlanner.app.MetasController"
+      styleClass="content" spacing="20">
+    <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
 
-    <left>
-        <fx:include source="sidebar.fxml"/>
-    </left>
+    <Label text="// Metas de Economia" styleClass="page-title"/>
 
-    <center>
-        <VBox styleClass="content" spacing="20">
-            <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+    <HBox spacing="10">
+        <TextField fx:id="txtDescricao"  promptText="Descrição"    prefWidth="200"/>
+        <TextField fx:id="txtValorAlvo"  promptText="Valor alvo"   prefWidth="120"/>
+        <DatePicker fx:id="dataLimite"   promptText="Data limite"  prefWidth="150"/>
+        <ComboBox  fx:id="cmbConta"      promptText="Conta"        prefWidth="150"/>
+        <Button text="Criar Meta" onAction="#criarMeta" styleClass="btn-primary"/>
+    </HBox>
 
-            <Label text="// Metas de Economia" styleClass="page-title"/>
-
-            <HBox spacing="10">
-                <TextField fx:id="txtDescricao"  promptText="Descrição"    prefWidth="200"/>
-                <TextField fx:id="txtValorAlvo"  promptText="Valor alvo"   prefWidth="120"/>
-                <DatePicker fx:id="dataLimite"   promptText="Data limite"  prefWidth="150"/>
-                <ComboBox  fx:id="cmbConta"      promptText="Conta"        prefWidth="150"/>
-                <Button text="Criar Meta" onAction="#criarMeta" styleClass="btn-primary"/>
-            </HBox>
-
-            <TableView fx:id="tabelaMetas" VBox.vgrow="ALWAYS">
-                <columns>
-                    <TableColumn fx:id="colDescricao"  text="Descrição"  prefWidth="200"/>
-                    <TableColumn fx:id="colAlvo"       text="Alvo"       prefWidth="120"/>
-                    <TableColumn fx:id="colAtual"      text="Atual"      prefWidth="120"/>
-                    <TableColumn fx:id="colProgresso"  text="Progresso"  prefWidth="160"/>
-                    <TableColumn fx:id="colLimite"     text="Prazo"      prefWidth="110"/>
-                    <TableColumn fx:id="colAcoes"      text="Ações"      prefWidth="80"/>
-                </columns>
-            </TableView>
-        </VBox>
-    </center>
-
-</BorderPane>
+    <TableView fx:id="tabelaMetas" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colDescricao"  text="Descrição"  prefWidth="200"/>
+            <TableColumn fx:id="colAlvo"       text="Alvo"       prefWidth="120"/>
+            <TableColumn fx:id="colAtual"      text="Atual"      prefWidth="120"/>
+            <TableColumn fx:id="colProgresso"  text="Progresso"  prefWidth="160"/>
+            <TableColumn fx:id="colLimite"     text="Prazo"      prefWidth="110"/>
+            <TableColumn fx:id="colAcoes"      text="Ações"      prefWidth="80"/>
+        </columns>
+    </TableView>
+</VBox>

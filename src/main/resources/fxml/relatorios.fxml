@@ -4,35 +4,25 @@
 <?import javafx.scene.chart.*?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="br.com.MeuPlanner.app.RelatoriosController"
-            styleClass="root-pane">
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="br.com.MeuPlanner.app.RelatoriosController"
+      styleClass="content" spacing="20">
+    <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
 
-    <left>
-        <fx:include source="sidebar.fxml"/>
-    </left>
+    <Label text="// Relatorios" styleClass="page-title"/>
 
-    <center>
-        <VBox styleClass="content" spacing="20">
-            <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Mês:" styleClass="form-label"/>
+        <ComboBox fx:id="cmbMes" prefWidth="130"/>
+        <Button text="Carregar" onAction="#carregar" styleClass="btn-primary"/>
+    </HBox>
 
-            <Label text="// Relatorios" styleClass="page-title"/>
-
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <Label text="Mês:" styleClass="form-label"/>
-                <ComboBox fx:id="cmbMes" prefWidth="130"/>
-                <Button text="Carregar" onAction="#carregar" styleClass="btn-primary"/>
-            </HBox>
-
-            <HBox spacing="30" VBox.vgrow="ALWAYS">
-                <PieChart fx:id="graficoPizza" title="Gastos por Categoria"
-                          prefWidth="400" prefHeight="350"/>
-                <LineChart fx:id="graficoLinha" prefWidth="420" prefHeight="350">
-                    <xAxis><CategoryAxis label="Mês"/></xAxis>
-                    <yAxis><NumberAxis label="R$"/></yAxis>
-                </LineChart>
-            </HBox>
-        </VBox>
-    </center>
-
-</BorderPane>
+    <HBox spacing="30" VBox.vgrow="ALWAYS">
+        <PieChart fx:id="graficoPizza" title="Gastos por Categoria"
+                  prefWidth="400" prefHeight="350"/>
+        <LineChart fx:id="graficoLinha" prefWidth="420" prefHeight="350">
+            <xAxis><CategoryAxis label="Mês"/></xAxis>
+            <yAxis><NumberAxis label="R$"/></yAxis>
+        </LineChart>
+    </HBox>
+</VBox>
