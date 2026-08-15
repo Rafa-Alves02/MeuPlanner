@@ -1,5 +1,6 @@
 package br.com.MeuPlanner.app;
 
+import java.io.IOException;
 import java.util.Map;
 
 import javafx.fxml.FXML;
@@ -61,6 +62,16 @@ public class NavbarController {
                 (int) Math.round(cor.getRed() * 255),
                 (int) Math.round(cor.getGreen() * 255),
                 (int) Math.round(cor.getBlue() * 255));
+    }
+
+    @FXML
+    private void sair() {
+        try {
+            SessaoAtual.encerrar();
+            MainApp.exibirLogin();
+        } catch (IOException e) {
+            throw new RuntimeException("Erro ao voltar pro login", e);
+        }
     }
 
     @FXML void irDashboard()      { SceneManager.navegarPara("dashboard"); }

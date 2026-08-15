@@ -46,6 +46,8 @@ Se você mudou `MYSQL_ROOT_PASSWORD` no `docker-compose.yml` ou está usando out
 mvn javafx:run
 ```
 
+Na primeira vez, a tela de login não vai ter nenhum usuário cadastrado ainda — usa o botão **"Criar conta"** ali mesmo pra criar o primeiro (username + senha, mínimo 6 caracteres). A senha é guardada com hash bcrypt (`at.favre.lib:bcrypt`), nunca em texto puro.
+
 ## Trocando o tema visual
 
 O tema base é aplicado uma vez em `MainApp.start()` via `Application.setUserAgentStylesheet(...)`. O AtlantaFX traz outras opções prontas em `atlantafx.base.theme` (`PrimerLight`, `NordLight`, `NordDark`, `CupertinoLight`, `CupertinoDark`, `Dracula`) — trocar é só importar a classe desejada e usá-la nesse mesmo `setUserAgentStylesheet`. Os estilos específicos do app (navbar, cards, botões, tabelas) continuam em `src/main/resources/css/style.css`, aplicado por cima do tema.
@@ -54,7 +56,13 @@ A cor de destaque (usada no item de menu ativo, botões primários e bordas em f
 
 ## Estrutura da interface (shell + conteúdo)
 
-A janela é montada uma única vez em `SceneManager.init()` a partir de `fxml/app-shell.fxml` (navbar no topo, área de conteúdo no centro, rodapé embaixo) — a navbar e o rodapé nunca são recriados. `SceneManager.navegarPara(tela)` só troca o conteúdo central, com um crossfade suave em vez de recarregar a janela inteira; isso também evita o "piscar" que acontecia quando cada tela recriava a `Scene` do zero. Cada arquivo em `fxml/` (exceto `app-shell.fxml`, `navbar.fxml` e `ofx-importar.fxml`, que são a moldura e um diálogo modal) é só o conteúdo de uma página, sem `BorderPane`/sidebar própria.
+A janela é montada uma única vez em `SceneManager.init()` a partir de `fxml/app-shell.fxml` (navbar no topo, área de conteúdo no centro, rodapé embaixo) — a navbar e o rodapé nunca são recriados. `SceneManager.navegarPara(tela)` só troca o conteúdo central, com um crossfade suave em vez de recarregar a janela inteira; isso também evita o "piscar" que acontecia quando cada tela recriava a `Scene` do zero. Cada arquivo em `fxml/` (exceto `app-shell.fxml`, `navbar.fxml`, `login.fxml` e `ofx-importar.fxml`, que são a moldura, a tela de login e um diálogo modal) é só o conteúdo de uma página, sem `BorderPane`/sidebar própria.
+
+## Login
+
+`MainApp` mostra `login.fxml` antes de qualquer coisa — só depois de autenticar (ou criar conta) é que `SceneManager.init()` monta o shell e navega pro dashboard. A sessão atual fica em `SessaoAtual` (em memória, reseta ao reabrir o app). O botão "Sair" na navbar encerra a sessão e volta pro login sem fechar o app.
+
+Hoje o login é só uma porta de entrada — os dados financeiros (contas, lançamentos, etc.) ainda não são segregados por usuário no banco. Se isso virar necessário (mais de uma pessoa usando o mesmo banco), é um passo à parte: adicionar `usuario_id` nas tabelas e filtrar as queries por usuário logado.
 
 ## Rodando os testes
 
