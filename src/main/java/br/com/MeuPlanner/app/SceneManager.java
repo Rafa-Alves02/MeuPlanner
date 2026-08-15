@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 public class SceneManager {
 
     private static Stage stage;
+    private static String telaAtual;
 
     public static void init(Stage primaryStage) {
         stage = primaryStage;
@@ -19,6 +20,7 @@ public class SceneManager {
 
     public static void navegarPara(String tela) {
         try {
+            telaAtual = tela;
             FXMLLoader loader = new FXMLLoader(
                     SceneManager.class.getResource("/fxml/" + tela + ".fxml"));
             Scene scene = new Scene(loader.load());
@@ -29,5 +31,9 @@ public class SceneManager {
         } catch (IOException e) {
             throw new RuntimeException("Erro ao carregar tela: " + tela, e);
         }
+    }
+
+    public static String getTelaAtual() {
+        return telaAtual;
     }
 }

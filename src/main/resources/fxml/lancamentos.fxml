@@ -7,28 +7,22 @@
             fx:controller="br.com.MeuPlanner.app.LancamentosController"
             styleClass="root-pane">
 
+    <fx:define>
+        <ToggleGroup fx:id="tipoGroup"/>
+    </fx:define>
+
     <left>
-        <VBox styleClass="sidebar" spacing="4" prefWidth="180">
-            <Label text="MeuPlanner" styleClass="logo"/>
-            <Button text="Dashboard"      onAction="#irDashboard"      maxWidth="Infinity" styleClass="nav-btn"/>
-            <Button text="Contas"         onAction="#irContas"         maxWidth="Infinity" styleClass="nav-btn"/>
-            <Button text="Lançamentos"    onAction="#irLancamentos"    maxWidth="Infinity" styleClass="nav-btn"/>
-            <Button text="Transferências" onAction="#irTransferencias" maxWidth="Infinity" styleClass="nav-btn"/>
-            <Button text="Categorias"     onAction="#irCategorias"     maxWidth="Infinity" styleClass="nav-btn"/>
-            <Button text="Metas"          onAction="#irMetas"          maxWidth="Infinity" styleClass="nav-btn"/>
-            <Button text="Relatórios"     onAction="#irRelatorios"     maxWidth="Infinity" styleClass="nav-btn"/>
-        </VBox>
+        <fx:include source="sidebar.fxml"/>
     </left>
 
     <center>
         <VBox styleClass="content" spacing="16">
             <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
 
-            <Label text="Lançamentos" styleClass="page-title"/>
+            <Label text="// Lancamentos" styleClass="page-title"/>
 
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <Label text="Tipo:" styleClass="form-label"/>
-                <ToggleGroup fx:id="tipoGroup"/>
                 <RadioButton text="Entrada" fx:id="rbEntrada" toggleGroup="$tipoGroup"/>
                 <RadioButton text="Gasto"   fx:id="rbGasto"   toggleGroup="$tipoGroup"/>
                 <Label text="Mês:" styleClass="form-label"/>
