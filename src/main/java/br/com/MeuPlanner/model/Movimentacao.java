@@ -4,11 +4,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
 
-/**
- * Superclasse de toda movimentação financeira (Entrada ou Gasto).
- * Concentra os campos e comportamentos comuns — quem antes era duplicado
- * entre Entrada e Gasto agora vive aqui uma vez só (reaproveitamento por herança).
- */
 public abstract class Movimentacao {
 
     protected Long id;
@@ -35,10 +30,8 @@ public abstract class Movimentacao {
         this.categoria = categoria;
     }
 
-    /** Sinal do impacto no saldo da conta: +1 para Entrada, -1 para Gasto. */
     public abstract int sinalNoSaldo();
 
-    /** Rótulo usado em telas/relatórios ("Entrada" ou "Gasto"). */
     public abstract String tipoMovimentacao();
 
     public Long getId() { return id; }
