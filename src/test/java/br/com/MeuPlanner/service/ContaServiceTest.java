@@ -25,9 +25,9 @@ class ContaServiceTest {
     }
 
     @Test
-    void rejeitaSaldoInicialNegativo() {
+    void rejeitaSaldoInicialNulo() {
         assertThrows(IllegalArgumentException.class,
-                () -> contaService.criarConta("Carteira", Conta.TipoConta.CARTEIRA, new BigDecimal("-1")));
+                () -> contaService.criarConta("Carteira", Conta.TipoConta.CARTEIRA, null));
     }
 
     @Test
