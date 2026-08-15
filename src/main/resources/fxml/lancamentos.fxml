@@ -7,6 +7,10 @@
             fx:controller="br.com.MeuPlanner.app.LancamentosController"
             styleClass="root-pane">
 
+    <fx:define>
+        <ToggleGroup fx:id="tipoGroup"/>
+    </fx:define>
+
     <left>
         <fx:include source="sidebar.fxml"/>
     </left>
@@ -19,7 +23,6 @@
 
             <HBox spacing="10" alignment="CENTER_LEFT">
                 <Label text="Tipo:" styleClass="form-label"/>
-                <ToggleGroup fx:id="tipoGroup"/>
                 <RadioButton text="Entrada" fx:id="rbEntrada" toggleGroup="$tipoGroup"/>
                 <RadioButton text="Gasto"   fx:id="rbGasto"   toggleGroup="$tipoGroup"/>
                 <Label text="Mês:" styleClass="form-label"/>
