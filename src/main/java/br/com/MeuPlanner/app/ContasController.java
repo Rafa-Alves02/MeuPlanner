@@ -1,5 +1,6 @@
 package br.com.MeuPlanner.app;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 
 import br.com.MeuPlanner.model.Conta;
@@ -8,7 +9,10 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -18,6 +22,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class ContasController {
 
@@ -62,15 +68,21 @@ public class ContasController {
         colTipo.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getTipo().name()));
         colSaldo.setCellValueFactory(c -> new SimpleStringProperty("R$ " + c.getValue().getSaldoAtual()));
         colAcoes.setCellFactory(tc -> new TableCell<>() {
-            private final Button btn = new Button("Excluir");
-            { btn.setOnAction(e -> {
-                Conta conta = getTableView().getItems().get(getIndex());
-                contaService.deletarConta(conta.getId());
-                carregarTabela();
-            }); }
+            private final Button btnOfx = new Button("OFX");
+            private final Button btnExcluir = new Button("Excluir");
+            private final HBox botoes = new HBox(6, btnOfx, btnExcluir);
+            {
+                btnOfx.setOnAction(e -> abrirImportarOfx(getTableView().getItems().get(getIndex())));
+                btnExcluir.getStyleClass().add("btn-danger");
+                btnExcluir.setOnAction(e -> {
+                    Conta conta = getTableView().getItems().get(getIndex());
+                    contaService.deletarConta(conta.getId());
+                    carregarTabela();
+                });
+            }
             @Override protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : btn);
+                setGraphic(empty ? null : botoes);
             }
         });
         carregarTabela();
@@ -94,5 +106,28 @@ public class ContasController {
     private void carregarTabela() {
         tabelaContas.setItems(FXCollections.observableArrayList(contaService.listarContas()));
         lblSaldoGeral.setText("Saldo Geral: R$ " + contaService.saldoTotalGeral());
+    }
+
+    private void abrirImportarOfx(Conta conta) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ofx-importar.fxml"));
+            Parent raiz = loader.load();
+            OfxImportController controller = loader.getController();
+            controller.setConta(conta);
+
+            Stage modal = new Stage();
+            modal.initModality(Modality.APPLICATION_MODAL);
+            modal.setTitle("Importar OFX — " + conta.getNome());
+            Scene scene = new Scene(raiz);
+            scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+            modal.setScene(scene);
+            modal.showAndWait();
+
+            if (controller.isImportado()) {
+                carregarTabela();
+            }
+        } catch (IOException ex) {
+            new Alert(Alert.AlertType.ERROR, "Erro ao abrir importador de OFX: " + ex.getMessage()).show();
+        }
     }
 }

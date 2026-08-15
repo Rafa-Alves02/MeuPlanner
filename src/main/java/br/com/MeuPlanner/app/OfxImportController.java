@@ -1,0 +1,125 @@
+package br.com.MeuPlanner.app;
+
+import java.io.File;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import br.com.MeuPlanner.model.Conta;
+import br.com.MeuPlanner.ofx.TransacaoOfx;
+import br.com.MeuPlanner.service.OfxImportService;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.CheckBoxTableCell;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+
+public class OfxImportController {
+
+    private final OfxImportService ofxImportService = new OfxImportService();
+
+    @FXML private Label lblArquivo;
+    @FXML private Label lblResumo;
+    @FXML private TableView<LinhaImportacao> tabelaTransacoes;
+    @FXML private TableColumn<LinhaImportacao, Boolean> colSelecionar;
+    @FXML private TableColumn<LinhaImportacao, String> colData;
+    @FXML private TableColumn<LinhaImportacao, String> colDescricao;
+    @FXML private TableColumn<LinhaImportacao, String> colValor;
+    @FXML private TableColumn<LinhaImportacao, String> colStatus;
+
+    private Conta conta;
+    private boolean importado;
+
+    public void setConta(Conta conta) {
+        this.conta = conta;
+    }
+
+    public boolean isImportado() {
+        return importado;
+    }
+
+    @FXML
+    public void initialize() {
+        colSelecionar.setCellValueFactory(c -> c.getValue().selecionado);
+        colSelecionar.setCellFactory(CheckBoxTableCell.forTableColumn(colSelecionar));
+        colData.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().transacao.data().toString()));
+        colDescricao.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().transacao.descricao()));
+        colValor.setCellValueFactory(c -> new SimpleStringProperty("R$ " + c.getValue().transacao.valor()));
+        colStatus.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().jaImportado ? "Já importado" : "Novo"));
+    }
+
+    @FXML
+    private void escolherArquivo() {
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Selecionar arquivo OFX");
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Arquivos OFX", "*.ofx"));
+        File arquivo = chooser.showOpenDialog(tabelaTransacoes.getScene().getWindow());
+        if (arquivo == null) return;
+
+        try {
+            List<OfxImportService.ItemImportacao> itens = ofxImportService.lerParaRevisao(arquivo, conta);
+            ObservableList<LinhaImportacao> linhas = FXCollections.observableArrayList();
+            for (var item : itens) {
+                linhas.add(new LinhaImportacao(item.transacao(), item.jaImportado()));
+            }
+            tabelaTransacoes.setItems(linhas);
+            lblArquivo.setText(arquivo.getName());
+            atualizarResumo();
+        } catch (Exception ex) {
+            new Alert(Alert.AlertType.ERROR, "Erro ao ler o OFX: " + ex.getMessage()).showAndWait();
+        }
+    }
+
+    private void atualizarResumo() {
+        long novos = tabelaTransacoes.getItems().stream().filter(l -> !l.jaImportado).count();
+        long duplicadas = tabelaTransacoes.getItems().size() - novos;
+        lblResumo.setText(novos + " novas, " + duplicadas + " já importadas anteriormente");
+    }
+
+    @FXML
+    private void confirmarImportacao() {
+        if (conta == null || tabelaTransacoes.getItems().isEmpty()) return;
+
+        List<TransacaoOfx> selecionadas = tabelaTransacoes.getItems().stream()
+                .filter(linha -> linha.selecionado.get() && !linha.jaImportado)
+                .map(linha -> linha.transacao)
+                .collect(Collectors.toList());
+
+        if (selecionadas.isEmpty()) {
+            new Alert(Alert.AlertType.INFORMATION, "Nenhuma transação nova selecionada.").showAndWait();
+            return;
+        }
+
+        int total = ofxImportService.importar(conta, selecionadas, null);
+        importado = total > 0;
+        new Alert(Alert.AlertType.INFORMATION, total + " lançamento(s) importado(s) com sucesso.").showAndWait();
+        fechar();
+    }
+
+    @FXML
+    private void cancelar() {
+        fechar();
+    }
+
+    private void fechar() {
+        ((Stage) tabelaTransacoes.getScene().getWindow()).close();
+    }
+
+    private static class LinhaImportacao {
+        final TransacaoOfx transacao;
+        final boolean jaImportado;
+        final SimpleBooleanProperty selecionado;
+
+        LinhaImportacao(TransacaoOfx transacao, boolean jaImportado) {
+            this.transacao = transacao;
+            this.jaImportado = jaImportado;
+            this.selecionado = new SimpleBooleanProperty(!jaImportado);
+        }
+    }
+}

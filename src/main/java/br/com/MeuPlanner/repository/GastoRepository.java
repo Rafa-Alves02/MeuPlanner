@@ -38,8 +38,8 @@ public class GastoRepository extends BaseRepository {
             String sql = """
                     INSERT INTO gastos
                     (descricao, valor, data_lancamento, mes_referencia, tipo_gasto,
-                     tipo_recorrencia, parcela_atual, total_parcelas, conta_id, categoria_id)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                     tipo_recorrencia, parcela_atual, total_parcelas, conta_id, categoria_id, fitid_ofx)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """;
             Long id = executarInsert(sql, stmt -> {
                 stmt.setString(1, gasto.getDescricao());
@@ -52,6 +52,7 @@ public class GastoRepository extends BaseRepository {
                 stmt.setObject(8, gasto.getTotalParcelas());
                 stmt.setLong(9, gasto.getConta().getId());
                 stmt.setObject(10, gasto.getCategoria() != null ? gasto.getCategoria().getId() : null);
+                stmt.setString(11, gasto.getFitidOfx());
             });
             if (id != null) gasto.setId(id);
 
@@ -97,6 +98,14 @@ public class GastoRepository extends BaseRepository {
         }, this::mapear);
     }
 
+    public boolean existeFitid(Long contaId, String fitidOfx) {
+        String sql = "SELECT 1 FROM gastos WHERE conta_id = ? AND fitid_ofx = ?";
+        return consultarUm(sql, stmt -> {
+            stmt.setLong(1, contaId);
+            stmt.setString(2, fitidOfx);
+        }, rs -> rs.getInt(1)).isPresent();
+    }
+
     private Gasto mapear(ResultSet rs) throws SQLException {
         Gasto gasto = new Gasto();
         gasto.setId(rs.getLong("id"));
@@ -108,6 +117,7 @@ public class GastoRepository extends BaseRepository {
         gasto.setTipoRecorrencia(TipoRecorrencia.valueOf(rs.getString("tipo_recorrencia")));
         gasto.setParcelaAtual(rs.getObject("parcela_atual", Integer.class));
         gasto.setTotalParcelas(rs.getObject("total_parcelas", Integer.class));
+        gasto.setFitidOfx(rs.getString("fitid_ofx"));
 
         gasto.setConta(mapearConta(rs));
 
