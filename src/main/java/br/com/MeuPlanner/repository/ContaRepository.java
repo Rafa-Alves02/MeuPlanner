@@ -15,23 +15,25 @@ public class ContaRepository extends BaseRepository {
     }
 
     public void salvar(Conta conta) {
-        String sql = "INSERT INTO contas (nome, tipo, saldo_inicial, saldo_atual) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO contas (nome, tipo, banco, saldo_inicial, saldo_atual) VALUES (?, ?, ?, ?, ?)";
         Long id = executarInsert(sql, stmt -> {
             stmt.setString(1, conta.getNome());
             stmt.setString(2, conta.getTipo().name());
-            stmt.setBigDecimal(3, conta.getSaldoInicial());
-            stmt.setBigDecimal(4, conta.getSaldoAtual());
+            stmt.setString(3, conta.getBanco());
+            stmt.setBigDecimal(4, conta.getSaldoInicial());
+            stmt.setBigDecimal(5, conta.getSaldoAtual());
         });
         if (id != null) conta.setId(id);
     }
 
     public void atualizar(Conta conta) {
-        String sql = "UPDATE contas SET nome = ?, tipo = ?, saldo_atual = ? WHERE id = ?";
+        String sql = "UPDATE contas SET nome = ?, tipo = ?, banco = ?, saldo_atual = ? WHERE id = ?";
         executarUpdate(sql, stmt -> {
             stmt.setString(1, conta.getNome());
             stmt.setString(2, conta.getTipo().name());
-            stmt.setBigDecimal(3, conta.getSaldoAtual());
-            stmt.setLong(4, conta.getId());
+            stmt.setString(3, conta.getBanco());
+            stmt.setBigDecimal(4, conta.getSaldoAtual());
+            stmt.setLong(5, conta.getId());
         });
     }
 
@@ -55,6 +57,7 @@ public class ContaRepository extends BaseRepository {
         conta.setId(rs.getLong("id"));
         conta.setNome(rs.getString("nome"));
         conta.setTipo(Conta.TipoConta.valueOf(rs.getString("tipo")));
+        conta.setBanco(rs.getString("banco"));
         conta.setSaldoInicial(rs.getBigDecimal("saldo_inicial"));
         conta.setSaldoAtual(rs.getBigDecimal("saldo_atual"));
         return conta;

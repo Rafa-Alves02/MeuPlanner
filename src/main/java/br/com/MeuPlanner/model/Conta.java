@@ -11,6 +11,7 @@ public class Conta {
     private Long id;
     private String nome;
     private TipoConta tipo;
+    private String banco;
     private BigDecimal saldoInicial;
     private BigDecimal saldoAtual;
     private LocalDate criadoEm;
@@ -18,9 +19,10 @@ public class Conta {
     public Conta() {
     }
 
-    public Conta(String nome, TipoConta tipo, BigDecimal saldoInicial) {
+    public Conta(String nome, TipoConta tipo, String banco, BigDecimal saldoInicial) {
         this.nome = nome;
         this.tipo = tipo;
+        this.banco = banco;
         this.saldoInicial = saldoInicial;
         this.saldoAtual = saldoInicial;
     }
@@ -47,6 +49,14 @@ public class Conta {
 
     public void setTipo(TipoConta tipo) {
         this.tipo = tipo;
+    }
+
+    public String getBanco() {
+        return banco;
+    }
+
+    public void setBanco(String banco) {
+        this.banco = banco;
     }
 
     public BigDecimal getSaldoInicial() {

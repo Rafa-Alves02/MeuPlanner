@@ -15,13 +15,13 @@ class ContaServiceTest {
     @Test
     void rejeitaNomeVazio() {
         assertThrows(IllegalArgumentException.class,
-                () -> contaService.criarConta("", Conta.TipoConta.CORRENTE, BigDecimal.TEN));
+                () -> contaService.criarConta("", Conta.TipoConta.CORRENTE, "Nubank", BigDecimal.TEN));
     }
 
     @Test
     void rejeitaNomeNulo() {
         assertThrows(IllegalArgumentException.class,
-                () -> contaService.criarConta(null, Conta.TipoConta.CORRENTE, BigDecimal.TEN));
+                () -> contaService.criarConta(null, Conta.TipoConta.CORRENTE, "Nubank", BigDecimal.TEN));
     }
 
     @Test
@@ -32,7 +32,7 @@ class ContaServiceTest {
 
     @Test
     void rejeitaAtualizacaoDeContaSemId() {
-        Conta conta = new Conta("Poupança", Conta.TipoConta.POUPANCA, BigDecimal.ZERO);
+        Conta conta = new Conta("Poupança", Conta.TipoConta.POUPANCA, "Bradesco", BigDecimal.ZERO);
         assertThrows(IllegalArgumentException.class, () -> contaService.atualizarConta(conta));
     }
 }
