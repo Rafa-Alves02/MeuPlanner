@@ -16,10 +16,6 @@ public class RecorrenciaService {
     private final GastoRepository gastoRepo = new GastoRepository();
     private final LancamentoService lancamentoService = new LancamentoService();
 
-    /**
-     * Chamado ao iniciar o app — verifica se já existem lançamentos
-     * recorrentes do mês atual e os cria automaticamente se não existirem.
-     */
     public void processarRecorrenciasDoMes() {
         YearMonth mesAtual = YearMonth.now();
 
@@ -32,7 +28,6 @@ public class RecorrenciaService {
         List<Entrada> lancadasNoMes = entradaRepo.listarPorMes(mesAtual);
 
         for (Entrada original : recorrentes) {
-            // Verifica se já existe lançamento desse recorrente no mês atual
             boolean jaLancado = lancadasNoMes.stream()
                     .anyMatch(e -> e.getDescricao().equals(original.getDescricao())
                             && e.getValor().compareTo(original.getValor()) == 0

@@ -6,19 +6,6 @@ import java.util.function.Supplier;
 
 import br.com.MeuPlanner.exception.RepositoryException;
 
-/**
- * Implementa o padrão Unit of Work para JDBC "puro".
- *
- * Problema que resolve: operações compostas (ex: uma transferência precisa
- * inserir 1 linha e atualizar 2 contas; um lançamento precisa inserir a
- * movimentação E atualizar o saldo da conta) devem ser atômicas — ou tudo
- * acontece, ou nada acontece.
- *
- * Os Repositories chamam currentConnection() em vez de abrir uma conexão
- * nova diretamente — se já existir uma transação ativa na thread atual,
- * reaproveitam a mesma conexão; caso contrário, abrem/fecham uma conexão
- * autocommit normalmente.
- */
 public final class TransactionManager {
 
     private static final ThreadLocal<Connection> CURRENT_CONNECTION = new ThreadLocal<>();
