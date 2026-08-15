@@ -29,10 +29,6 @@ public class AlertaService {
         alertaRepo.deletar(id);
     }
 
-    /**
-     * Verifica todos os alertas do mês e retorna os que foram ultrapassados.
-     * Marca automaticamente como disparados no banco.
-     */
     public List<Alerta> verificarAlertas(YearMonth mes) {
         List<Alerta> alertasAtivos = alertaRepo.listarNaoDisparados(mes);
         List<Alerta> alertasDisparados = new ArrayList<>();

@@ -6,10 +6,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Divide o valor total em N parcelas iguais. A ÚLTIMA parcela absorve o
- * resto do arredondamento, garantindo que a soma bata exatamente com o total.
- */
 public class ParcelasIguaisStrategy implements ParcelamentoStrategy {
 
     @Override
