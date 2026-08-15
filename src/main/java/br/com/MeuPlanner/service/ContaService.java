@@ -10,13 +10,13 @@ public class ContaService {
 
     private final ContaRepository contaRepo = new ContaRepository();
 
-    public Conta criarConta(String nome, Conta.TipoConta tipo, BigDecimal saldoInicial) {
+    public Conta criarConta(String nome, Conta.TipoConta tipo, String banco, BigDecimal saldoInicial) {
         if (nome == null || nome.isBlank())
             throw new IllegalArgumentException("Nome da conta não pode ser vazio!");
         if (saldoInicial == null || saldoInicial.compareTo(BigDecimal.ZERO) < 0)
             throw new IllegalArgumentException("Saldo inicial não pode ser negativo!");
 
-        Conta conta = new Conta(nome, tipo, saldoInicial);
+        Conta conta = new Conta(nome, tipo, banco, saldoInicial);
         contaRepo.salvar(conta);
         return conta;
     }

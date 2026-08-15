@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS contas (
                                       id              BIGINT AUTO_INCREMENT PRIMARY KEY,
                                       nome            VARCHAR(100) NOT NULL,
                                       tipo            ENUM('CORRENTE','POUPANCA','CARTEIRA','INVESTIMENTO') NOT NULL,
+    banco           VARCHAR(50),
     saldo_inicial   DECIMAL(15,2) NOT NULL DEFAULT 0.00,
     saldo_atual     DECIMAL(15,2) NOT NULL DEFAULT 0.00,
     criado_em       DATETIME DEFAULT CURRENT_TIMESTAMP
