@@ -32,8 +32,10 @@ CREATE TABLE IF NOT EXISTS entradas (
     total_parcelas   INT,
     conta_id         BIGINT NOT NULL,
     categoria_id     BIGINT,
+    fitid_ofx        VARCHAR(100),
     FOREIGN KEY (conta_id) REFERENCES contas(id),
-    FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+    FOREIGN KEY (categoria_id) REFERENCES categorias(id),
+    UNIQUE KEY uk_entradas_conta_fitid (conta_id, fitid_ofx)
 );
 
 CREATE TABLE IF NOT EXISTS gastos (
@@ -48,8 +50,10 @@ CREATE TABLE IF NOT EXISTS gastos (
     total_parcelas   INT,
     conta_id         BIGINT NOT NULL,
     categoria_id     BIGINT,
+    fitid_ofx        VARCHAR(100),
     FOREIGN KEY (conta_id) REFERENCES contas(id),
-    FOREIGN KEY (categoria_id) REFERENCES categorias(id)
+    FOREIGN KEY (categoria_id) REFERENCES categorias(id),
+    UNIQUE KEY uk_gastos_conta_fitid (conta_id, fitid_ofx)
 );
 
 CREATE TABLE IF NOT EXISTS transferencias (

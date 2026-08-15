@@ -37,8 +37,8 @@ public class EntradaRepository extends BaseRepository {
             String sql = """
                     INSERT INTO entradas
                     (descricao, valor, data_lancamento, mes_referencia, tipo_recorrencia,
-                     parcela_atual, total_parcelas, conta_id, categoria_id)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                     parcela_atual, total_parcelas, conta_id, categoria_id, fitid_ofx)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                     """;
             Long id = executarInsert(sql, stmt -> {
                 stmt.setString(1, entrada.getDescricao());
@@ -50,6 +50,7 @@ public class EntradaRepository extends BaseRepository {
                 stmt.setObject(7, entrada.getTotalParcelas());
                 stmt.setLong(8, entrada.getConta().getId());
                 stmt.setObject(9, entrada.getCategoria() != null ? entrada.getCategoria().getId() : null);
+                stmt.setString(10, entrada.getFitidOfx());
             });
             if (id != null) entrada.setId(id);
 
@@ -87,6 +88,14 @@ public class EntradaRepository extends BaseRepository {
         return consultarLista(sql, stmt -> {}, this::mapear);
     }
 
+    public boolean existeFitid(Long contaId, String fitidOfx) {
+        String sql = "SELECT 1 FROM entradas WHERE conta_id = ? AND fitid_ofx = ?";
+        return consultarUm(sql, stmt -> {
+            stmt.setLong(1, contaId);
+            stmt.setString(2, fitidOfx);
+        }, rs -> rs.getInt(1)).isPresent();
+    }
+
     private Entrada mapear(ResultSet rs) throws SQLException {
         Entrada entrada = new Entrada();
         entrada.setId(rs.getLong("id"));
@@ -97,6 +106,7 @@ public class EntradaRepository extends BaseRepository {
         entrada.setTipoRecorrencia(TipoRecorrencia.valueOf(rs.getString("tipo_recorrencia")));
         entrada.setParcelaAtual(rs.getObject("parcela_atual", Integer.class));
         entrada.setTotalParcelas(rs.getObject("total_parcelas", Integer.class));
+        entrada.setFitidOfx(rs.getString("fitid_ofx"));
 
         entrada.setConta(mapearConta(rs));
 

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="br.com.MeuPlanner.app.OfxImportController"
+      styleClass="content" spacing="14" prefWidth="640" prefHeight="480">
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+    <Label text="// Importar OFX" styleClass="page-title"/>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button text="Escolher arquivo..." onAction="#escolherArquivo" styleClass="btn-primary"/>
+        <Label fx:id="lblArquivo" text="Nenhum arquivo selecionado" styleClass="form-label"/>
+    </HBox>
+
+    <TableView fx:id="tabelaTransacoes" editable="true" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colSelecionar" text=""         prefWidth="36"/>
+            <TableColumn fx:id="colData"       text="Data"      prefWidth="90"/>
+            <TableColumn fx:id="colDescricao"  text="Descrição" prefWidth="270"/>
+            <TableColumn fx:id="colValor"      text="Valor"     prefWidth="100"/>
+            <TableColumn fx:id="colStatus"     text="Status"    prefWidth="120"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Label fx:id="lblResumo" text="" styleClass="form-label" HBox.hgrow="ALWAYS"/>
+        <Button text="Cancelar" onAction="#cancelar" styleClass="btn-danger"/>
+        <Button text="Importar selecionados" onAction="#confirmarImportacao" styleClass="btn-primary"/>
+    </HBox>
+</VBox>

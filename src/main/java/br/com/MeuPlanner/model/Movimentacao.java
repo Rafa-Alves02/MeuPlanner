@@ -16,6 +16,7 @@ public abstract class Movimentacao {
     protected Integer totalParcelas;
     protected Conta conta;
     protected Categoria categoria;
+    protected String fitidOfx;
 
     protected Movimentacao() {}
 
@@ -66,4 +67,7 @@ public abstract class Movimentacao {
 
     public Categoria getCategoria() { return categoria; }
     public void setCategoria(Categoria categoria) { this.categoria = categoria; }
+
+    public String getFitidOfx() { return fitidOfx; }
+    public void setFitidOfx(String fitidOfx) { this.fitidOfx = fitidOfx; }
 }
