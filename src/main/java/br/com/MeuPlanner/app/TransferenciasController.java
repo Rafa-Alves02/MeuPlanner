@@ -62,12 +62,4 @@ public class TransferenciasController {
             new Alert(Alert.AlertType.ERROR, "Erro: " + ex.getMessage()).show();
         }
     }
-
-    @FXML void irDashboard()      { SceneManager.navegarPara("dashboard"); }
-    @FXML void irContas()         { SceneManager.navegarPara("contas"); }
-    @FXML void irLancamentos()    { SceneManager.navegarPara("lancamentos"); }
-    @FXML void irTransferencias() { SceneManager.navegarPara("transferencias"); }
-    @FXML void irCategorias()     { SceneManager.navegarPara("categorias"); }
-    @FXML void irMetas()          { SceneManager.navegarPara("metas"); }
-    @FXML void irRelatorios()     { SceneManager.navegarPara("relatorios"); }
 }
