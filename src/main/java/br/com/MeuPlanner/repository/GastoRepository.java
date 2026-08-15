@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import br.com.MeuPlanner.config.TransactionManager;
+import br.com.MeuPlanner.model.Categoria;
 import br.com.MeuPlanner.model.Conta;
 import br.com.MeuPlanner.model.Gasto;
 import br.com.MeuPlanner.model.TipoGasto;
@@ -15,8 +16,17 @@ import br.com.MeuPlanner.model.TipoRecorrencia;
 
 public class GastoRepository extends BaseRepository {
 
+    private static final String SELECT_COM_JOINS = """
+            SELECT g.*,
+                   c.nome AS c_nome, c.tipo AS c_tipo, c.saldo_inicial AS c_saldo_inicial,
+                   c.saldo_atual AS c_saldo_atual,
+                   cat.id AS cat_id, cat.nome AS cat_nome, cat.tipo AS cat_tipo, cat.cor AS cat_cor
+            FROM gastos g
+            JOIN contas c ON c.id = g.conta_id
+            LEFT JOIN categorias cat ON cat.id = g.categoria_id
+            """;
+
     private final ContaRepository contaRepo = new ContaRepository();
-    private final CategoriaRepository categoriaRepo = new CategoriaRepository();
 
     @Override
     protected String nomeEntidade() {
@@ -65,22 +75,22 @@ public class GastoRepository extends BaseRepository {
     }
 
     public Optional<Gasto> buscarPorId(Long id) {
-        String sql = "SELECT * FROM gastos WHERE id = ?";
+        String sql = SELECT_COM_JOINS + " WHERE g.id = ?";
         return consultarUm(sql, stmt -> stmt.setLong(1, id), this::mapear);
     }
 
     public List<Gasto> listarPorMes(YearMonth mes) {
-        String sql = "SELECT * FROM gastos WHERE mes_referencia = ? ORDER BY data_lancamento DESC";
+        String sql = SELECT_COM_JOINS + " WHERE g.mes_referencia = ? ORDER BY g.data_lancamento DESC";
         return consultarLista(sql, stmt -> stmt.setString(1, mes.toString()), this::mapear);
     }
 
     public List<Gasto> listarRecorrentes() {
-        String sql = "SELECT * FROM gastos WHERE tipo_recorrencia = 'RECORRENTE'";
+        String sql = SELECT_COM_JOINS + " WHERE g.tipo_recorrencia = 'RECORRENTE'";
         return consultarLista(sql, stmt -> {}, this::mapear);
     }
 
     public List<Gasto> listarPorCategoria(Long categoriaId, YearMonth mes) {
-        String sql = "SELECT * FROM gastos WHERE categoria_id = ? AND mes_referencia = ?";
+        String sql = SELECT_COM_JOINS + " WHERE g.categoria_id = ? AND g.mes_referencia = ?";
         return consultarLista(sql, stmt -> {
             stmt.setLong(1, categoriaId);
             stmt.setString(2, mes.toString());
@@ -99,12 +109,30 @@ public class GastoRepository extends BaseRepository {
         gasto.setParcelaAtual(rs.getObject("parcela_atual", Integer.class));
         gasto.setTotalParcelas(rs.getObject("total_parcelas", Integer.class));
 
-        // TODO: N+1 — considerar JOIN
-        contaRepo.buscarPorId(rs.getLong("conta_id")).ifPresent(gasto::setConta);
+        gasto.setConta(mapearConta(rs));
 
-        long catId = rs.getLong("categoria_id");
-        if (!rs.wasNull()) categoriaRepo.buscarPorId(catId).ifPresent(gasto::setCategoria);
+        long catId = rs.getLong("cat_id");
+        if (!rs.wasNull()) gasto.setCategoria(mapearCategoria(rs));
 
         return gasto;
+    }
+
+    private Conta mapearConta(ResultSet rs) throws SQLException {
+        Conta conta = new Conta();
+        conta.setId(rs.getLong("conta_id"));
+        conta.setNome(rs.getString("c_nome"));
+        conta.setTipo(Conta.TipoConta.valueOf(rs.getString("c_tipo")));
+        conta.setSaldoInicial(rs.getBigDecimal("c_saldo_inicial"));
+        conta.setSaldoAtual(rs.getBigDecimal("c_saldo_atual"));
+        return conta;
+    }
+
+    private Categoria mapearCategoria(ResultSet rs) throws SQLException {
+        Categoria categoria = new Categoria();
+        categoria.setId(rs.getLong("cat_id"));
+        categoria.setNome(rs.getString("cat_nome"));
+        categoria.setTipo(Categoria.TipoCategoria.valueOf(rs.getString("cat_tipo")));
+        categoria.setCor(rs.getString("cat_cor"));
+        return categoria;
     }
 }

@@ -13,11 +13,15 @@ import br.com.MeuPlanner.model.TipoGasto;
 import br.com.MeuPlanner.model.TipoRecorrencia;
 import br.com.MeuPlanner.repository.EntradaRepository;
 import br.com.MeuPlanner.repository.GastoRepository;
+import br.com.MeuPlanner.strategy.Parcela;
+import br.com.MeuPlanner.strategy.ParcelamentoStrategy;
+import br.com.MeuPlanner.strategy.ParcelasIguaisStrategy;
 
 public class LancamentoService {
 
     private final EntradaRepository entradaRepo = new EntradaRepository();
     private final GastoRepository gastoRepo = new GastoRepository();
+    private final ParcelamentoStrategy parcelamentoStrategy = new ParcelasIguaisStrategy();
 
     public Entrada adicionarEntrada(String descricao, BigDecimal valor, LocalDate data,
                                     TipoRecorrencia recorrencia, Conta conta, Categoria categoria) {
@@ -46,16 +50,16 @@ public class LancamentoService {
         validarValor(valorTotal);
         if (totalParcelas <= 0) throw new IllegalArgumentException("Total de parcelas deve ser maior que zero!");
 
-        BigDecimal valorParcela = valorTotal.divide(BigDecimal.valueOf(totalParcelas), 2, java.math.RoundingMode.HALF_UP);
+        List<Parcela> parcelas = parcelamentoStrategy.gerarParcelas(valorTotal, dataInicio, totalParcelas);
         Gasto primeiraParcelaGasto = null;
 
-        for (int i = 1; i <= totalParcelas; i++) {
-            LocalDate dataParcela = dataInicio.plusMonths(i - 1);
-            Gasto gasto = new Gasto(descricao, valorParcela, dataParcela, tipoGasto, TipoRecorrencia.PARCELAMENTO, conta, categoria);
-            gasto.setParcelaAtual(i);
-            gasto.setTotalParcelas(totalParcelas);
+        for (Parcela parcela : parcelas) {
+            Gasto gasto = new Gasto(descricao, parcela.valor(), parcela.data(), tipoGasto,
+                    TipoRecorrencia.PARCELAMENTO, conta, categoria);
+            gasto.setParcelaAtual(parcela.numero());
+            gasto.setTotalParcelas(parcela.totalParcelas());
             gastoRepo.salvar(gasto);
-            if (i == 1) primeiraParcelaGasto = gasto;
+            if (parcela.numero() == 1) primeiraParcelaGasto = gasto;
         }
 
         return primeiraParcelaGasto;
