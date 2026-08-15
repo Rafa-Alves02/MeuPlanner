@@ -6,18 +6,22 @@ import java.sql.SQLException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
-public class ConnectionFactory {
+import br.com.MeuPlanner.exception.RepositoryException;
+
+public final class ConnectionFactory {
 
     private static final HikariDataSource dataSource;
 
     static {
+        AppConfig appConfig = AppConfig.getInstance();
+
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:mysql://localhost:3306/meuplanner?useSSL=false&serverTimezone=UTC");
-        config.setUsername("root");
-        config.setPassword("sua_senha");
-        config.setMaximumPoolSize(10);
-        config.setMinimumIdle(2);
-        config.setConnectionTimeout(30000);
+        config.setJdbcUrl(appConfig.get("db.url", "jdbc:mysql://localhost:3306/meuplanner?useSSL=false&serverTimezone=UTC"));
+        config.setUsername(appConfig.get("db.user", "root"));
+        config.setPassword(appConfig.get("db.password", ""));
+        config.setMaximumPoolSize(appConfig.getInt("db.pool.maxSize", 10));
+        config.setMinimumIdle(appConfig.getInt("db.pool.minIdle", 2));
+        config.setConnectionTimeout(appConfig.getInt("db.pool.connectionTimeoutMs", 30000));
         dataSource = new HikariDataSource(config);
     }
 
@@ -27,7 +31,7 @@ public class ConnectionFactory {
         try {
             return dataSource.getConnection();
         } catch (SQLException e) {
-            throw new RuntimeException("Erro ao obter conexão", e);
+            throw new RepositoryException("Erro ao obter conexão", e);
         }
     }
 }

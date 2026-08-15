@@ -29,10 +29,11 @@ public class RecorrenciaService {
 
     private void processarEntradasRecorrentes(YearMonth mesAtual) {
         List<Entrada> recorrentes = entradaRepo.listarRecorrentes();
+        List<Entrada> lancadasNoMes = entradaRepo.listarPorMes(mesAtual);
 
         for (Entrada original : recorrentes) {
             // Verifica se já existe lançamento desse recorrente no mês atual
-            boolean jaLancado = entradaRepo.listarPorMes(mesAtual).stream()
+            boolean jaLancado = lancadasNoMes.stream()
                     .anyMatch(e -> e.getDescricao().equals(original.getDescricao())
                             && e.getValor().compareTo(original.getValor()) == 0
                             && e.getTipoRecorrencia() == TipoRecorrencia.RECORRENTE);
@@ -52,9 +53,10 @@ public class RecorrenciaService {
 
     private void processarGastosRecorrentes(YearMonth mesAtual) {
         List<Gasto> recorrentes = gastoRepo.listarRecorrentes();
+        List<Gasto> lancadosNoMes = gastoRepo.listarPorMes(mesAtual);
 
         for (Gasto original : recorrentes) {
-            boolean jaLancado = gastoRepo.listarPorMes(mesAtual).stream()
+            boolean jaLancado = lancadosNoMes.stream()
                     .anyMatch(g -> g.getDescricao().equals(original.getDescricao())
                             && g.getValor().compareTo(original.getValor()) == 0
                             && g.getTipoRecorrencia() == TipoRecorrencia.RECORRENTE);
