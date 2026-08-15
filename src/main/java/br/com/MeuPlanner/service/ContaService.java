@@ -13,8 +13,8 @@ public class ContaService {
     public Conta criarConta(String nome, Conta.TipoConta tipo, String banco, BigDecimal saldoInicial) {
         if (nome == null || nome.isBlank())
             throw new IllegalArgumentException("Nome da conta não pode ser vazio!");
-        if (saldoInicial == null || saldoInicial.compareTo(BigDecimal.ZERO) < 0)
-            throw new IllegalArgumentException("Saldo inicial não pode ser negativo!");
+        if (saldoInicial == null)
+            throw new IllegalArgumentException("Saldo inicial é obrigatório!");
 
         Conta conta = new Conta(nome, tipo, banco, saldoInicial);
         contaRepo.salvar(conta);
