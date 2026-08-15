@@ -27,7 +27,7 @@ class ContaServiceTest {
     @Test
     void rejeitaSaldoInicialNulo() {
         assertThrows(IllegalArgumentException.class,
-                () -> contaService.criarConta("Carteira", Conta.TipoConta.CARTEIRA, null));
+                () -> contaService.criarConta("Carteira", Conta.TipoConta.CARTEIRA, "Inter", null));
     }
 
     @Test
