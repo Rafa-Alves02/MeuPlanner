@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="br.com.MeuPlanner.app.LoginController"
+      styleClass="root-pane" alignment="CENTER" spacing="16">
+    <padding><Insets top="40" right="40" bottom="40" left="40"/></padding>
+
+    <Label text="MEUPLANNER_" styleClass="logo" style="-fx-font-size: 24px;"/>
+    <Label text="// login" styleClass="section-title"/>
+
+    <VBox styleClass="card" spacing="12" maxWidth="320" minWidth="320">
+        <TextField fx:id="txtUsuario" promptText="Usuário" onAction="#entrar"/>
+        <PasswordField fx:id="txtSenha" promptText="Senha" onAction="#entrar"/>
+        <Label fx:id="lblErro" styleClass="value-negative" style="-fx-font-size: 12px;" wrapText="true"/>
+        <HBox spacing="10" alignment="CENTER">
+            <Button text="Entrar" onAction="#entrar" styleClass="btn-primary"/>
+            <Button text="Criar conta" onAction="#criarConta" styleClass="btn-danger"/>
+        </HBox>
+    </VBox>
+</VBox>
