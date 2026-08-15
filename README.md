@@ -2,7 +2,7 @@
 
 Controle financeiro pessoal em desktop: contas, entradas, gastos, transferências entre contas, metas de poupança e alertas de limite por categoria.
 
-- **Interface:** JavaFX (telas em FXML)
+- **Interface:** JavaFX (telas em FXML), tema base [AtlantaFX](https://github.com/mkpaz/atlantafx) (Primer Light)
 - **Persistência:** MySQL via JDBC puro, pool de conexões HikariCP
 - **Build:** Maven
 
@@ -45,6 +45,10 @@ Se você mudou `MYSQL_ROOT_PASSWORD` no `docker-compose.yml` ou está usando out
 ```bash
 mvn javafx:run
 ```
+
+## Trocando o tema visual
+
+O tema base é aplicado uma vez em `MainApp.start()` via `Application.setUserAgentStylesheet(...)`. O AtlantaFX traz outras opções prontas em `atlantafx.base.theme` (`PrimerDark`, `NordLight`, `NordDark`, `CupertinoLight`, `CupertinoDark`, `Dracula`) — trocar é só importar a classe desejada e usá-la nesse mesmo `setUserAgentStylesheet`. Os estilos específicos do app (sidebar, cards, botões) continuam em `src/main/resources/css/style.css`, aplicado por cima do tema.
 
 ## Rodando os testes
 
