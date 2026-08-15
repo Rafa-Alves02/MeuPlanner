@@ -3,10 +3,14 @@ package br.com.MeuPlanner.app;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+import br.com.MeuPlanner.service.RecorrenciaService;
+
 public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        new RecorrenciaService().processarRecorrenciasDoMes();
+
         SceneManager.init(stage);
         SceneManager.navegarPara("dashboard");
     }
