@@ -1,55 +1,51 @@
 .root-pane {
+    -accent-cor: #cc1111;
     -fx-background-color: #0a0a0a;
     -fx-font-family: "Cascadia Mono", "Consolas", "JetBrains Mono", monospace;
 }
 
-.scanline-overlay {
-    -fx-background-image: url("/images/scanline.png");
-    -fx-background-repeat: repeat;
-}
-
-.sidebar {
+.navbar {
     -fx-background-color: #000000;
-    -fx-border-color: #660000;
-    -fx-border-width: 0 1 0 0;
-    -fx-padding: 24 14;
+    -fx-border-color: -accent-cor;
+    -fx-border-width: 0 0 1 0;
+    -fx-min-height: 56;
+    -fx-pref-height: 56;
 }
 .logo {
     -fx-text-fill: #ffffff;
-    -fx-font-size: 16px;
+    -fx-font-size: 15px;
     -fx-font-weight: bold;
     -fx-letter-spacing: 1px;
-    -fx-padding: 0 0 22 4;
 }
 .nav-btn {
     -fx-background-color: transparent;
-    -fx-background-radius: 0;
+    -fx-background-radius: 8;
     -fx-text-fill: #8a8a8a;
-    -fx-alignment: CENTER-LEFT;
-    -fx-padding: 9 10;
-    -fx-font-size: 13px;
+    -fx-padding: 8 12;
+    -fx-font-size: 12.5px;
     -fx-cursor: hand;
-    -fx-border-color: transparent;
-    -fx-border-width: 0 0 0 2;
 }
 .nav-btn:hover {
     -fx-background-color: #1a0505;
     -fx-text-fill: #ffffff;
-    -fx-border-color: #cc1111;
 }
 .nav-btn:pressed {
     -fx-background-color: #2a0808;
 }
 .nav-btn-ativo {
-    -fx-background-color: #cc1111;
+    -fx-background-color: -accent-cor;
+    -fx-background-radius: 8;
     -fx-text-fill: #ffffff;
     -fx-font-weight: bold;
-    -fx-border-color: #ffffff;
 }
 .nav-btn-ativo:hover {
-    -fx-background-color: #e61717;
+    -fx-background-color: derive(-accent-cor, 20%);
     -fx-text-fill: #ffffff;
-    -fx-border-color: #ffffff;
+}
+
+.color-picker-accent {
+    -fx-background-radius: 8;
+    -fx-mark-color: #ffffff;
 }
 
 .content {
@@ -71,10 +67,24 @@
     -fx-padding: 0 0 6 0;
 }
 
+.footer {
+    -fx-background-color: #050505;
+    -fx-border-color: #1c1010;
+    -fx-border-width: 1 0 0 0;
+    -fx-min-height: 32;
+    -fx-pref-height: 32;
+}
+.footer-label {
+    -fx-text-fill: #5a5a5a;
+    -fx-font-size: 11px;
+    -fx-letter-spacing: 0.5px;
+}
+
 .card {
     -fx-background-color: #121212;
-    -fx-background-radius: 0;
+    -fx-background-radius: 10;
     -fx-border-color: #2a1414;
+    -fx-border-radius: 10;
     -fx-border-width: 1;
     -fx-padding: 18;
     -fx-spacing: 6;
@@ -97,8 +107,8 @@
 }
 
 .btn-primary {
-    -fx-background-color: #cc1111;
-    -fx-background-radius: 0;
+    -fx-background-color: -accent-cor;
+    -fx-background-radius: 8;
     -fx-text-fill: #ffffff;
     -fx-font-size: 13px;
     -fx-font-weight: bold;
@@ -106,16 +116,17 @@
     -fx-cursor: hand;
 }
 .btn-primary:hover {
-    -fx-background-color: #e61717;
+    -fx-background-color: derive(-accent-cor, 20%);
 }
 .btn-primary:pressed {
-    -fx-background-color: #990000;
+    -fx-background-color: derive(-accent-cor, -25%);
 }
 .btn-danger {
     -fx-background-color: #1a1a1a;
-    -fx-background-radius: 0;
+    -fx-background-radius: 8;
     -fx-text-fill: #ff3d3d;
     -fx-border-color: #ff3d3d;
+    -fx-border-radius: 8;
     -fx-border-width: 1;
     -fx-font-size: 13px;
     -fx-font-weight: bold;
@@ -136,8 +147,8 @@
 }
 .text-field, .combo-box {
     -fx-background-color: #121212;
-    -fx-background-radius: 0;
-    -fx-border-radius: 0;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
     -fx-border-color: #2a1414;
     -fx-text-fill: #e8e8e8;
     -fx-padding: 6 10;
@@ -146,18 +157,20 @@
     -fx-border-color: #661515;
 }
 .text-field:focused, .combo-box:focused {
-    -fx-border-color: #cc1111;
+    -fx-border-color: -accent-cor;
 }
 
 .table-view {
     -fx-background-color: #121212;
+    -fx-background-radius: 10;
     -fx-border-color: #2a1414;
+    -fx-border-radius: 10;
     -fx-border-width: 1;
     -fx-table-cell-border-color: #1c1010;
 }
 .table-view .column-header-background {
     -fx-background-color: #000000;
-    -fx-background-radius: 0;
+    -fx-background-radius: 10 10 0 0;
 }
 .table-view .column-header, .table-view .filler {
     -fx-background-color: transparent;
@@ -182,8 +195,8 @@
     -fx-background-color: #1a0505;
 }
 .table-row-cell:selected {
-    -fx-background-color: #330a0a;
-    -fx-border-color: transparent transparent #cc1111 transparent;
+    -fx-background-color: derive(-accent-cor, -60%);
+    -fx-border-color: transparent transparent -accent-cor transparent;
 }
 .table-row-cell:selected .text {
     -fx-fill: #ffffff;

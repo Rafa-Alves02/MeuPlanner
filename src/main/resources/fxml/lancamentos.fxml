@@ -3,54 +3,44 @@
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="br.com.MeuPlanner.app.LancamentosController"
-            styleClass="root-pane">
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="br.com.MeuPlanner.app.LancamentosController"
+      styleClass="content" spacing="16">
+    <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
 
     <fx:define>
         <ToggleGroup fx:id="tipoGroup"/>
     </fx:define>
 
-    <left>
-        <fx:include source="sidebar.fxml"/>
-    </left>
+    <Label text="// Lancamentos" styleClass="page-title"/>
 
-    <center>
-        <VBox styleClass="content" spacing="16">
-            <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Tipo:" styleClass="form-label"/>
+        <RadioButton text="Entrada" fx:id="rbEntrada" toggleGroup="$tipoGroup"/>
+        <RadioButton text="Gasto"   fx:id="rbGasto"   toggleGroup="$tipoGroup"/>
+        <Label text="Mês:" styleClass="form-label"/>
+        <ComboBox fx:id="cmbMes" prefWidth="120"/>
+    </HBox>
 
-            <Label text="// Lancamentos" styleClass="page-title"/>
+    <HBox spacing="10">
+        <TextField fx:id="txtDescricao"  promptText="Descrição"    prefWidth="200"/>
+        <TextField fx:id="txtValor"       promptText="Valor"        prefWidth="110"/>
+        <DatePicker fx:id="dataPicker"    promptText="Data"         prefWidth="140"/>
+        <ComboBox  fx:id="cmbConta"       promptText="Conta"        prefWidth="140"/>
+        <ComboBox  fx:id="cmbCategoria"   promptText="Categoria"    prefWidth="140"/>
+        <ComboBox  fx:id="cmbRecorrencia" promptText="Recorrência"  prefWidth="140"/>
+        <Button text="Lançar" onAction="#lancar" styleClass="btn-primary"/>
+    </HBox>
 
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <Label text="Tipo:" styleClass="form-label"/>
-                <RadioButton text="Entrada" fx:id="rbEntrada" toggleGroup="$tipoGroup"/>
-                <RadioButton text="Gasto"   fx:id="rbGasto"   toggleGroup="$tipoGroup"/>
-                <Label text="Mês:" styleClass="form-label"/>
-                <ComboBox fx:id="cmbMes" prefWidth="120"/>
-            </HBox>
-
-            <HBox spacing="10">
-                <TextField fx:id="txtDescricao"  promptText="Descrição"    prefWidth="200"/>
-                <TextField fx:id="txtValor"       promptText="Valor"        prefWidth="110"/>
-                <DatePicker fx:id="dataPicker"    promptText="Data"         prefWidth="140"/>
-                <ComboBox  fx:id="cmbConta"       promptText="Conta"        prefWidth="140"/>
-                <ComboBox  fx:id="cmbCategoria"   promptText="Categoria"    prefWidth="140"/>
-                <ComboBox  fx:id="cmbRecorrencia" promptText="Recorrência"  prefWidth="140"/>
-                <Button text="Lançar" onAction="#lancar" styleClass="btn-primary"/>
-            </HBox>
-
-            <TableView fx:id="tabelaLancamentos" VBox.vgrow="ALWAYS">
-                <columns>
-                    <TableColumn fx:id="colTipo"      text="Tipo"       prefWidth="80"/>
-                    <TableColumn fx:id="colDescricao" text="Descrição"  prefWidth="200"/>
-                    <TableColumn fx:id="colValor"     text="Valor"      prefWidth="120"/>
-                    <TableColumn fx:id="colData"      text="Data"       prefWidth="110"/>
-                    <TableColumn fx:id="colConta"     text="Conta"      prefWidth="130"/>
-                    <TableColumn fx:id="colCategoria" text="Categoria"  prefWidth="120"/>
-                    <TableColumn fx:id="colAcoes"     text="Ações"      prefWidth="80"/>
-                </columns>
-            </TableView>
-        </VBox>
-    </center>
-
-</BorderPane>
+    <TableView fx:id="tabelaLancamentos" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colTipo"      text="Tipo"       prefWidth="80"/>
+            <TableColumn fx:id="colDescricao" text="Descrição"  prefWidth="200"/>
+            <TableColumn fx:id="colValor"     text="Valor"      prefWidth="120"/>
+            <TableColumn fx:id="colData"      text="Data"       prefWidth="110"/>
+            <TableColumn fx:id="colConta"     text="Conta"      prefWidth="130"/>
+            <TableColumn fx:id="colCategoria" text="Categoria"  prefWidth="120"/>
+            <TableColumn fx:id="colAcoes"     text="Ações"      prefWidth="80"/>
+        </columns>
+    </TableView>
+</VBox>

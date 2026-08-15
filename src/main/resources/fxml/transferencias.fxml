@@ -3,39 +3,29 @@
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="br.com.MeuPlanner.app.TransferenciasController"
-            styleClass="root-pane">
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="br.com.MeuPlanner.app.TransferenciasController"
+      styleClass="content" spacing="20">
+    <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
 
-    <left>
-        <fx:include source="sidebar.fxml"/>
-    </left>
+    <Label text="// Transferencias" styleClass="page-title"/>
 
-    <center>
-        <VBox styleClass="content" spacing="20">
-            <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <ComboBox fx:id="cmbOrigem"  promptText="Conta de origem"  prefWidth="200"/>
+        <Label text="→" style="-fx-font-size:18px;"/>
+        <ComboBox fx:id="cmbDestino" promptText="Conta de destino" prefWidth="200"/>
+        <TextField fx:id="txtValor"  promptText="Valor"            prefWidth="120"/>
+        <TextField fx:id="txtDescricao" promptText="Descrição"     prefWidth="180"/>
+        <Button text="Transferir" onAction="#transferir" styleClass="btn-primary"/>
+    </HBox>
 
-            <Label text="// Transferencias" styleClass="page-title"/>
-
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <ComboBox fx:id="cmbOrigem"  promptText="Conta de origem"  prefWidth="200"/>
-                <Label text="→" style="-fx-font-size:18px;"/>
-                <ComboBox fx:id="cmbDestino" promptText="Conta de destino" prefWidth="200"/>
-                <TextField fx:id="txtValor"  promptText="Valor"            prefWidth="120"/>
-                <TextField fx:id="txtDescricao" promptText="Descrição"     prefWidth="180"/>
-                <Button text="Transferir" onAction="#transferir" styleClass="btn-primary"/>
-            </HBox>
-
-            <TableView fx:id="tabelaTransferencias" VBox.vgrow="ALWAYS">
-                <columns>
-                    <TableColumn fx:id="colOrigem"  text="Origem"   prefWidth="180"/>
-                    <TableColumn fx:id="colDestino" text="Destino"  prefWidth="180"/>
-                    <TableColumn fx:id="colValor"   text="Valor"    prefWidth="120"/>
-                    <TableColumn fx:id="colData"    text="Data"     prefWidth="120"/>
-                    <TableColumn fx:id="colDesc"    text="Descrição" prefWidth="200"/>
-                </columns>
-            </TableView>
-        </VBox>
-    </center>
-
-</BorderPane>
+    <TableView fx:id="tabelaTransferencias" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colOrigem"  text="Origem"   prefWidth="180"/>
+            <TableColumn fx:id="colDestino" text="Destino"  prefWidth="180"/>
+            <TableColumn fx:id="colValor"   text="Valor"    prefWidth="120"/>
+            <TableColumn fx:id="colData"    text="Data"     prefWidth="120"/>
+            <TableColumn fx:id="colDesc"    text="Descrição" prefWidth="200"/>
+        </columns>
+    </TableView>
+</VBox>

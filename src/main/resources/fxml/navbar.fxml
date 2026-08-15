@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<HBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="br.com.MeuPlanner.app.NavbarController"
+      styleClass="navbar" spacing="4" alignment="CENTER_LEFT">
+    <padding><Insets top="0" right="18" bottom="0" left="18"/></padding>
+
+    <Label text="MEUPLANNER_" styleClass="logo"/>
+
+    <Region HBox.hgrow="ALWAYS"/>
+
+    <Button fx:id="btnDashboard"      text="// Dashboard"      onAction="#irDashboard"      styleClass="nav-btn"/>
+    <Button fx:id="btnContas"         text="// Contas"         onAction="#irContas"         styleClass="nav-btn"/>
+    <Button fx:id="btnLancamentos"    text="// Lancamentos"    onAction="#irLancamentos"    styleClass="nav-btn"/>
+    <Button fx:id="btnTransferencias" text="// Transferencias" onAction="#irTransferencias" styleClass="nav-btn"/>
+    <Button fx:id="btnCategorias"     text="// Categorias"     onAction="#irCategorias"     styleClass="nav-btn"/>
+    <Button fx:id="btnMetas"          text="// Metas"          onAction="#irMetas"          styleClass="nav-btn"/>
+    <Button fx:id="btnRelatorios"     text="// Relatorios"     onAction="#irRelatorios"     styleClass="nav-btn"/>
+
+    <Region HBox.hgrow="ALWAYS"/>
+
+    <ColorPicker fx:id="colorPickerAccent" styleClass="color-picker-accent" onAction="#trocarCor"/>
+</HBox>

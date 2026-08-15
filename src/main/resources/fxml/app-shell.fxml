@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="br.com.MeuPlanner.app.AppShellController"
+            styleClass="root-pane">
+
+    <top>
+        <fx:include source="navbar.fxml"/>
+    </top>
+
+    <center>
+        <StackPane fx:id="conteudoHost"/>
+    </center>
+
+    <bottom>
+        <HBox styleClass="footer" alignment="CENTER">
+            <Label text="© 2026 by r4z0r" styleClass="footer-label"/>
+        </HBox>
+    </bottom>
+
+</BorderPane>

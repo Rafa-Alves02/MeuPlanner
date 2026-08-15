@@ -3,40 +3,30 @@
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="br.com.MeuPlanner.app.ContasController"
-            styleClass="root-pane">
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="br.com.MeuPlanner.app.ContasController"
+      styleClass="content" spacing="20">
+    <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
 
-    <left>
-        <fx:include source="sidebar.fxml"/>
-    </left>
+    <Label text="// Contas" styleClass="page-title"/>
 
-    <center>
-        <VBox styleClass="content" spacing="20">
-            <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+    <HBox spacing="10">
+        <TextField fx:id="txtNome" promptText="Nome da conta" prefWidth="180"/>
+        <ComboBox fx:id="cmbTipo" promptText="Tipo" prefWidth="140"/>
+        <ComboBox fx:id="cmbBanco" promptText="Banco" editable="true" prefWidth="140"/>
+        <TextField fx:id="txtSaldo" promptText="Saldo inicial" prefWidth="120"/>
+        <Button text="Adicionar" onAction="#adicionarConta" styleClass="btn-primary"/>
+    </HBox>
 
-            <Label text="// Contas" styleClass="page-title"/>
+    <TableView fx:id="tabelaContas" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colBanco"  text="Banco"        prefWidth="150"/>
+            <TableColumn fx:id="colNome"   text="Nome"         prefWidth="190"/>
+            <TableColumn fx:id="colTipo"   text="Tipo"         prefWidth="130"/>
+            <TableColumn fx:id="colSaldo"  text="Saldo Atual"  prefWidth="140"/>
+            <TableColumn fx:id="colAcoes"  text="Ações"        prefWidth="100"/>
+        </columns>
+    </TableView>
 
-            <HBox spacing="10">
-                <TextField fx:id="txtNome" promptText="Nome da conta" prefWidth="180"/>
-                <ComboBox fx:id="cmbTipo" promptText="Tipo" prefWidth="140"/>
-                <ComboBox fx:id="cmbBanco" promptText="Banco" editable="true" prefWidth="140"/>
-                <TextField fx:id="txtSaldo" promptText="Saldo inicial" prefWidth="120"/>
-                <Button text="Adicionar" onAction="#adicionarConta" styleClass="btn-primary"/>
-            </HBox>
-
-            <TableView fx:id="tabelaContas" VBox.vgrow="ALWAYS">
-                <columns>
-                    <TableColumn fx:id="colBanco"  text="Banco"        prefWidth="150"/>
-                    <TableColumn fx:id="colNome"   text="Nome"         prefWidth="190"/>
-                    <TableColumn fx:id="colTipo"   text="Tipo"         prefWidth="130"/>
-                    <TableColumn fx:id="colSaldo"  text="Saldo Atual"  prefWidth="140"/>
-                    <TableColumn fx:id="colAcoes"  text="Ações"        prefWidth="100"/>
-                </columns>
-            </TableView>
-
-            <Label fx:id="lblSaldoGeral" text="Saldo Geral: R$ 0,00" styleClass="section-title"/>
-        </VBox>
-    </center>
-
-</BorderPane>
+    <Label fx:id="lblSaldoGeral" text="Saldo Geral: R$ 0,00" styleClass="section-title"/>
+</VBox>

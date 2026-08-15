@@ -3,36 +3,26 @@
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="br.com.MeuPlanner.app.CategoriasController"
-            styleClass="root-pane">
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="br.com.MeuPlanner.app.CategoriasController"
+      styleClass="content" spacing="20">
+    <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
 
-    <left>
-        <fx:include source="sidebar.fxml"/>
-    </left>
+    <Label text="// Categorias" styleClass="page-title"/>
 
-    <center>
-        <VBox styleClass="content" spacing="20">
-            <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+    <HBox spacing="10">
+        <TextField fx:id="txtNome"  promptText="Nome da categoria" prefWidth="200"/>
+        <ComboBox  fx:id="cmbTipo"  promptText="Tipo"              prefWidth="140"/>
+        <TextField fx:id="txtCor"   promptText="Cor (#HEX)"        prefWidth="120"/>
+        <Button text="Adicionar" onAction="#adicionarCategoria" styleClass="btn-primary"/>
+    </HBox>
 
-            <Label text="// Categorias" styleClass="page-title"/>
-
-            <HBox spacing="10">
-                <TextField fx:id="txtNome"  promptText="Nome da categoria" prefWidth="200"/>
-                <ComboBox  fx:id="cmbTipo"  promptText="Tipo"              prefWidth="140"/>
-                <TextField fx:id="txtCor"   promptText="Cor (#HEX)"        prefWidth="120"/>
-                <Button text="Adicionar" onAction="#adicionarCategoria" styleClass="btn-primary"/>
-            </HBox>
-
-            <TableView fx:id="tabelaCategorias" VBox.vgrow="ALWAYS">
-                <columns>
-                    <TableColumn fx:id="colNome"  text="Nome"  prefWidth="260"/>
-                    <TableColumn fx:id="colTipo"  text="Tipo"  prefWidth="160"/>
-                    <TableColumn fx:id="colCor"   text="Cor"   prefWidth="120"/>
-                    <TableColumn fx:id="colAcoes" text="Ações" prefWidth="100"/>
-                </columns>
-            </TableView>
-        </VBox>
-    </center>
-
-</BorderPane>
+    <TableView fx:id="tabelaCategorias" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colNome"  text="Nome"  prefWidth="260"/>
+            <TableColumn fx:id="colTipo"  text="Tipo"  prefWidth="160"/>
+            <TableColumn fx:id="colCor"   text="Cor"   prefWidth="120"/>
+            <TableColumn fx:id="colAcoes" text="Ações" prefWidth="100"/>
+        </columns>
+    </TableView>
+</VBox>

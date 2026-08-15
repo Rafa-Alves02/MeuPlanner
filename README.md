@@ -2,7 +2,7 @@
 
 Controle financeiro pessoal em desktop: contas, entradas, gastos, transferências entre contas, metas de poupança e alertas de limite por categoria.
 
-- **Interface:** JavaFX (telas em FXML), tema base [AtlantaFX](https://github.com/mkpaz/atlantafx) (Primer Light)
+- **Interface:** JavaFX (telas em FXML), tema base [AtlantaFX](https://github.com/mkpaz/atlantafx) (Primer Dark)
 - **Persistência:** MySQL via JDBC puro, pool de conexões HikariCP
 - **Build:** Maven
 
@@ -48,7 +48,13 @@ mvn javafx:run
 
 ## Trocando o tema visual
 
-O tema base é aplicado uma vez em `MainApp.start()` via `Application.setUserAgentStylesheet(...)`. O AtlantaFX traz outras opções prontas em `atlantafx.base.theme` (`PrimerDark`, `NordLight`, `NordDark`, `CupertinoLight`, `CupertinoDark`, `Dracula`) — trocar é só importar a classe desejada e usá-la nesse mesmo `setUserAgentStylesheet`. Os estilos específicos do app (sidebar, cards, botões) continuam em `src/main/resources/css/style.css`, aplicado por cima do tema.
+O tema base é aplicado uma vez em `MainApp.start()` via `Application.setUserAgentStylesheet(...)`. O AtlantaFX traz outras opções prontas em `atlantafx.base.theme` (`PrimerLight`, `NordLight`, `NordDark`, `CupertinoLight`, `CupertinoDark`, `Dracula`) — trocar é só importar a classe desejada e usá-la nesse mesmo `setUserAgentStylesheet`. Os estilos específicos do app (navbar, cards, botões, tabelas) continuam em `src/main/resources/css/style.css`, aplicado por cima do tema.
+
+A cor de destaque (usada no item de menu ativo, botões primários e bordas em foco) é ajustável em tempo real pelo seletor de cor na navbar — a escolha é salva em `~/.meuplanner/ui.properties` e volta a valer na próxima abertura do app.
+
+## Estrutura da interface (shell + conteúdo)
+
+A janela é montada uma única vez em `SceneManager.init()` a partir de `fxml/app-shell.fxml` (navbar no topo, área de conteúdo no centro, rodapé embaixo) — a navbar e o rodapé nunca são recriados. `SceneManager.navegarPara(tela)` só troca o conteúdo central, com um crossfade suave em vez de recarregar a janela inteira; isso também evita o "piscar" que acontecia quando cada tela recriava a `Scene` do zero. Cada arquivo em `fxml/` (exceto `app-shell.fxml`, `navbar.fxml` e `ofx-importar.fxml`, que são a moldura e um diálogo modal) é só o conteúdo de uma página, sem `BorderPane`/sidebar própria.
 
 ## Rodando os testes
 
