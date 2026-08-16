@@ -70,6 +70,27 @@ Hoje o login é só uma porta de entrada — os dados financeiros (contas, lanç
 
 Na tela de Importar OFX, o botão "Sugerir categorias (IA)" chama um modelo Llama local (via Ollama, veja `OllamaClient`/`CategorizacaoIAService`) pra sugerir a categoria de cada lançamento. Se a sugestão estiver errada, o botão "Corrigir" na própria linha deixa escolher a categoria certa — essa correção fica salva em `categorizacao_aprendida` (chave: descrição normalizada, sem números) e, da próxima vez que aparecer uma transação parecida, o sistema usa a categoria que você ensinou direto, sem nem chamar a IA de novo. É por isso que não existe mais uma tela dedicada de "Categorias" na navbar principal — o fluxo de categorizar acontece no import, e o cadastro/gerenciamento de categorias (criar, editar cor, excluir) ficou dentro de "Meu Perfil → Gerenciar Categorias".
 
+## Open Finance (Pluggy)
+
+Cada conta pode ser conectada a um banco de verdade via [Pluggy](https://www.pluggy.ai/) — sem precisar mais baixar e importar OFX manualmente. Usa o fluxo **Meu Pluggy** (gratuito, sem prazo de expiração, pra conectar contas do seu próprio CPF).
+
+1. Crie uma conta em [meu.pluggy.ai](https://meu.pluggy.ai) e pegue seu `CLIENT_ID`/`CLIENT_SECRET` no dashboard.
+2. Configure as credenciais como variável de ambiente (nunca commitadas):
+   ```bash
+   export PLUGGY_CLIENT_ID=...
+   export PLUGGY_CLIENT_SECRET=...
+   ```
+3. Na tela de Contas, clique em **"Open Finance"** na linha da conta → abre o widget de conexão do banco no navegador padrão. Depois de conectar, o Pluggy mostra um **Item ID** — cole ele de volta no app e escolha, na lista, qual conta do banco corresponde a essa conta do MeuPlanner.
+4. Uma vez vinculada, o botão vira **"Sincronizar"**: busca as transações mais recentes direto da API do Pluggy e abre a mesma tela de revisão/categorização por IA usada no import de OFX (reaproveita `OfxImportService`/`CategorizacaoIAService` — a dedicação de duplicatas usa o mesmo mecanismo de `fitid_ofx`, guardando o id da transação do Pluggy).
+
+Sem as credenciais configuradas, o botão "Open Finance" mostra um erro explicando o que falta — o resto do app funciona normal.
+
+**Migração manual pra quem já tem o banco criado:**
+```sql
+ALTER TABLE contas ADD COLUMN pluggy_item_id VARCHAR(64);
+ALTER TABLE contas ADD COLUMN pluggy_account_id VARCHAR(64);
+```
+
 ## Rodando os testes
 
 ```bash
@@ -84,6 +105,8 @@ src/main/java/br/com/MeuPlanner/
 ├── config/       AppConfig, ConnectionFactory, TransactionManager
 ├── exception/    exceções de domínio
 ├── model/        entidades (Conta, Categoria, Entrada, Gasto, Meta, ...)
+├── ofx/          parser de extrato OFX
+├── pluggy/       cliente da API do Pluggy (Open Finance)
 ├── repository/   acesso a dados (JDBC), um por entidade
 ├── service/      regra de negócio
 └── strategy/     estratégias de parcelamento
