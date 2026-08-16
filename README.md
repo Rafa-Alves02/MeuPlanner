@@ -1,8 +1,8 @@
 # MeuPlanner
 
-Controle financeiro pessoal em desktop: contas, entradas, gastos, transferências entre contas, metas de poupança e alertas de limite por categoria.
+Controle financeiro pessoal em desktop: contas, entradas, gastos, metas de poupança, alertas de limite por categoria e categorização automática de lançamentos via IA local.
 
-- **Interface:** JavaFX (telas em FXML), tema base [AtlantaFX](https://github.com/mkpaz/atlantafx) (Primer Dark)
+- **Interface:** JavaFX (telas em FXML), base [AtlantaFX](https://github.com/mkpaz/atlantafx) (Primer Dark) com um skin próprio por cima (`style.css`) no visual DedSec — dark, neon ciano/amarelo/rosa, cantos retos, inspirado no menu do Watch Dogs 2
 - **Persistência:** MySQL via JDBC puro, pool de conexões HikariCP
 - **Build:** Maven
 
@@ -58,11 +58,17 @@ A cor de destaque (usada no item de menu ativo, botões primários e bordas em f
 
 A janela é montada uma única vez em `SceneManager.init()` a partir de `fxml/app-shell.fxml` (navbar no topo, área de conteúdo no centro, rodapé embaixo) — a navbar e o rodapé nunca são recriados. `SceneManager.navegarPara(tela)` só troca o conteúdo central, com um crossfade suave em vez de recarregar a janela inteira; isso também evita o "piscar" que acontecia quando cada tela recriava a `Scene` do zero. Cada arquivo em `fxml/` (exceto `app-shell.fxml`, `navbar.fxml`, `login.fxml` e `ofx-importar.fxml`, que são a moldura, a tela de login e um diálogo modal) é só o conteúdo de uma página, sem `BorderPane`/sidebar própria.
 
+A navbar tem dois grupos: **// Contas** (Contas & Bancos, Lançamentos, Metas) e **// Meu Perfil** (Meu Perfil, Relatórios, Gerenciar Categorias, Sair) — cada um é um `MenuButton` com submenu em vez de um botão por tela, pra não lotar a barra.
+
 ## Login
 
-`MainApp` mostra `login.fxml` antes de qualquer coisa — só depois de autenticar (ou criar conta) é que `SceneManager.init()` monta o shell e navega pro dashboard. A sessão atual fica em `SessaoAtual` (em memória, reseta ao reabrir o app). O botão "Sair" na navbar encerra a sessão e volta pro login sem fechar o app.
+`MainApp` mostra `login.fxml` antes de qualquer coisa — só depois de autenticar (ou criar conta) é que `SceneManager.init()` monta o shell e navega pro dashboard. A sessão atual fica em `SessaoAtual` (em memória, reseta ao reabrir o app). O item "Sair" no menu "Meu Perfil" da navbar encerra a sessão e volta pro login sem fechar o app.
 
 Hoje o login é só uma porta de entrada — os dados financeiros (contas, lançamentos, etc.) ainda não são segregados por usuário no banco. Se isso virar necessário (mais de uma pessoa usando o mesmo banco), é um passo à parte: adicionar `usuario_id` nas tabelas e filtrar as queries por usuário logado.
+
+## Categorização por IA (com memória)
+
+Na tela de Importar OFX, o botão "Sugerir categorias (IA)" chama um modelo Llama local (via Ollama, veja `OllamaClient`/`CategorizacaoIAService`) pra sugerir a categoria de cada lançamento. Se a sugestão estiver errada, o botão "Corrigir" na própria linha deixa escolher a categoria certa — essa correção fica salva em `categorizacao_aprendida` (chave: descrição normalizada, sem números) e, da próxima vez que aparecer uma transação parecida, o sistema usa a categoria que você ensinou direto, sem nem chamar a IA de novo. É por isso que não existe mais uma tela dedicada de "Categorias" na navbar principal — o fluxo de categorizar acontece no import, e o cadastro/gerenciamento de categorias (criar, editar cor, excluir) ficou dentro de "Meu Perfil → Gerenciar Categorias".
 
 ## Rodando os testes
 

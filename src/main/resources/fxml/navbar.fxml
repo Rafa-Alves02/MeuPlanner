@@ -12,16 +12,27 @@
 
     <Region HBox.hgrow="ALWAYS"/>
 
-    <Button fx:id="btnDashboard"      text="// Dashboard"      onAction="#irDashboard"      styleClass="nav-btn"/>
-    <Button fx:id="btnContas"         text="// Contas"         onAction="#irContas"         styleClass="nav-btn"/>
-    <Button fx:id="btnLancamentos"    text="// Lancamentos"    onAction="#irLancamentos"    styleClass="nav-btn"/>
-    <Button fx:id="btnTransferencias" text="// Transferencias" onAction="#irTransferencias" styleClass="nav-btn"/>
-    <Button fx:id="btnCategorias"     text="// Categorias"     onAction="#irCategorias"     styleClass="nav-btn"/>
-    <Button fx:id="btnMetas"          text="// Metas"          onAction="#irMetas"          styleClass="nav-btn"/>
-    <Button fx:id="btnRelatorios"     text="// Relatorios"     onAction="#irRelatorios"     styleClass="nav-btn"/>
+    <Button fx:id="btnDashboard" text="// Dashboard" onAction="#irDashboard" styleClass="nav-btn"/>
+
+    <MenuButton fx:id="menuContas" text="// Contas" styleClass="nav-menu">
+        <items>
+            <MenuItem text="Contas &amp; Bancos" onAction="#irContas"/>
+            <MenuItem text="Lançamentos" onAction="#irLancamentos"/>
+            <MenuItem text="Metas" onAction="#irMetas"/>
+        </items>
+    </MenuButton>
 
     <Region HBox.hgrow="ALWAYS"/>
 
     <ColorPicker fx:id="colorPickerAccent" styleClass="color-picker-accent" onAction="#trocarCor"/>
-    <Button text="Sair" onAction="#sair" styleClass="btn-danger"/>
+
+    <MenuButton fx:id="menuPerfil" text="// Meu Perfil" styleClass="nav-menu">
+        <items>
+            <MenuItem text="Meu Perfil" onAction="#irPerfil"/>
+            <MenuItem text="Relatórios" onAction="#irRelatorios"/>
+            <MenuItem text="Gerenciar Categorias" onAction="#irCategorias"/>
+            <SeparatorMenuItem/>
+            <MenuItem text="Sair" onAction="#sair" styleClass="nav-menu-item-sair"/>
+        </items>
+    </MenuButton>
 </HBox>

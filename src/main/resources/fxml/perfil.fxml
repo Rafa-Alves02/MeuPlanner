@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="br.com.MeuPlanner.app.PerfilController"
+      styleClass="content" spacing="20">
+    <padding><Insets top="30" right="30" bottom="30" left="30"/></padding>
+
+    <Label text="// Meu Perfil" styleClass="page-title"/>
+
+    <VBox styleClass="card" spacing="10" maxWidth="360">
+        <Label text="Usuário" styleClass="card-label"/>
+        <Label fx:id="lblUsername" text="—" styleClass="value-positive"/>
+    </VBox>
+
+    <Label text="Atalhos" styleClass="section-title"/>
+    <HBox spacing="10">
+        <Button text="Relatórios" onAction="#irRelatorios" styleClass="btn-primary"/>
+        <Button text="Gerenciar Categorias" onAction="#irCategorias" styleClass="btn-primary"/>
+        <Button text="Sair" onAction="#sair" styleClass="btn-danger"/>
+    </HBox>
+</VBox>
