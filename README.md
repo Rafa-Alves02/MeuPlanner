@@ -11,6 +11,7 @@ Controle financeiro pessoal em desktop: contas, entradas, gastos, transferência
 - **JDK 25** — `java -version` deve mostrar 25 ou superior
 - **Maven 3.9+**
 - **Docker** (recomendado, pra subir o MySQL) ou uma instância de MySQL 8 já rodando
+- **[Ollama](https://ollama.com)** (opcional) — só necessário pra usar a sugestão de categoria por IA na importação de OFX. Sem ele instalado, o resto do app funciona normal, só o botão "Sugerir categorias (IA)" que vai dar erro de conexão.
 
 ## Subindo o banco
 
@@ -63,6 +64,19 @@ A janela é montada uma única vez em `SceneManager.init()` a partir de `fxml/ap
 `MainApp` mostra `login.fxml` antes de qualquer coisa — só depois de autenticar (ou criar conta) é que `SceneManager.init()` monta o shell e navega pro dashboard. A sessão atual fica em `SessaoAtual` (em memória, reseta ao reabrir o app). O botão "Sair" na navbar encerra a sessão e volta pro login sem fechar o app.
 
 Hoje o login é só uma porta de entrada — os dados financeiros (contas, lançamentos, etc.) ainda não são segregados por usuário no banco. Se isso virar necessário (mais de uma pessoa usando o mesmo banco), é um passo à parte: adicionar `usuario_id` nas tabelas e filtrar as queries por usuário logado.
+
+## Categorização por IA (Ollama)
+
+Na tela de importar OFX, o botão **"Sugerir categorias (IA)"** manda a descrição de cada transação nova pro [Ollama](https://ollama.com) rodando localmente e pede pra ele escolher, entre as categorias já cadastradas no seu banco, a que mais combina. Nenhum dado financeiro sai da sua máquina — o modelo roda 100% local.
+
+Setup:
+
+```bash
+# instala o Ollama (Windows: winget install Ollama.Ollama)
+ollama pull llama3.2
+```
+
+`OllamaClient` fala com `http://localhost:11434` (porta padrão do Ollama) usando o modelo `llama3.2` — pra trocar o modelo, edita a constante `MODELO` em `OllamaClient.java`. Se a resposta da IA não bater com o nome de nenhuma categoria existente, a transação fica sem categoria (você classifica na mão depois, na tela de Lançamentos) — o app nunca cria uma categoria nova sozinho a partir do que a IA responde.
 
 ## Rodando os testes
 

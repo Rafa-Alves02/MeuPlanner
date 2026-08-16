@@ -1,11 +1,14 @@
 package br.com.MeuPlanner.app;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
+import br.com.MeuPlanner.model.Categoria;
 import br.com.MeuPlanner.model.Conta;
 import br.com.MeuPlanner.ofx.TransacaoOfx;
+import br.com.MeuPlanner.service.CategorizacaoIAService;
 import br.com.MeuPlanner.service.OfxImportService;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -23,6 +26,7 @@ import javafx.stage.Stage;
 public class OfxImportController {
 
     private final OfxImportService ofxImportService = new OfxImportService();
+    private final CategorizacaoIAService categorizacaoIAService = new CategorizacaoIAService();
 
     @FXML private Label lblArquivo;
     @FXML private Label lblResumo;
@@ -31,6 +35,7 @@ public class OfxImportController {
     @FXML private TableColumn<LinhaImportacao, String> colData;
     @FXML private TableColumn<LinhaImportacao, String> colDescricao;
     @FXML private TableColumn<LinhaImportacao, String> colValor;
+    @FXML private TableColumn<LinhaImportacao, String> colCategoria;
     @FXML private TableColumn<LinhaImportacao, String> colStatus;
 
     private Conta conta;
@@ -51,6 +56,8 @@ public class OfxImportController {
         colData.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().transacao.data().toString()));
         colDescricao.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().transacao.descricao()));
         colValor.setCellValueFactory(c -> new SimpleStringProperty("R$ " + c.getValue().transacao.valor()));
+        colCategoria.setCellValueFactory(c -> new SimpleStringProperty(
+                c.getValue().categoriaSugerida == null ? "—" : c.getValue().categoriaSugerida.getNome()));
         colStatus.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().jaImportado ? "Já importado" : "Novo"));
     }
 
@@ -76,6 +83,25 @@ public class OfxImportController {
         }
     }
 
+    @FXML
+    private void sugerirCategoriasIA() {
+        if (tabelaTransacoes.getItems().isEmpty()) return;
+
+        try {
+            for (LinhaImportacao linha : tabelaTransacoes.getItems()) {
+                if (linha.jaImportado) continue;
+
+                Categoria.TipoCategoria tipo = linha.transacao.isEntrada()
+                        ? Categoria.TipoCategoria.ENTRADA
+                        : Categoria.TipoCategoria.SAIDA;
+                linha.categoriaSugerida = categorizacaoIAService.sugerirCategoria(linha.transacao.descricao(), tipo);
+            }
+            tabelaTransacoes.refresh();
+        } catch (Exception ex) {
+            new Alert(Alert.AlertType.ERROR, "Erro ao consultar a IA: " + ex.getMessage()).showAndWait();
+        }
+    }
+
     private void atualizarResumo() {
         long novos = tabelaTransacoes.getItems().stream().filter(l -> !l.jaImportado).count();
         long duplicadas = tabelaTransacoes.getItems().size() - novos;
@@ -86,17 +112,19 @@ public class OfxImportController {
     private void confirmarImportacao() {
         if (conta == null || tabelaTransacoes.getItems().isEmpty()) return;
 
-        List<TransacaoOfx> selecionadas = tabelaTransacoes.getItems().stream()
-                .filter(linha -> linha.selecionado.get() && !linha.jaImportado)
-                .map(linha -> linha.transacao)
-                .collect(Collectors.toList());
+        Map<TransacaoOfx, Categoria> selecionadas = new HashMap<>();
+        for (LinhaImportacao linha : tabelaTransacoes.getItems()) {
+            if (linha.selecionado.get() && !linha.jaImportado) {
+                selecionadas.put(linha.transacao, linha.categoriaSugerida);
+            }
+        }
 
         if (selecionadas.isEmpty()) {
             new Alert(Alert.AlertType.INFORMATION, "Nenhuma transação nova selecionada.").showAndWait();
             return;
         }
 
-        int total = ofxImportService.importar(conta, selecionadas, null);
+        int total = ofxImportService.importar(conta, selecionadas);
         importado = total > 0;
         new Alert(Alert.AlertType.INFORMATION, total + " lançamento(s) importado(s) com sucesso.").showAndWait();
         fechar();
@@ -115,6 +143,7 @@ public class OfxImportController {
         final TransacaoOfx transacao;
         final boolean jaImportado;
         final SimpleBooleanProperty selecionado;
+        Categoria categoriaSugerida;
 
         LinhaImportacao(TransacaoOfx transacao, boolean jaImportado) {
             this.transacao = transacao;
