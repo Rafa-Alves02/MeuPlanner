@@ -1,8 +1,9 @@
 package br.com.MeuPlanner.app;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import br.com.MeuPlanner.model.Categoria;
 import br.com.MeuPlanner.model.Conta;
@@ -41,7 +42,11 @@ public class OfxImportController {
     @FXML
     private TableColumn<LinhaImportacao, String> colValor;
     @FXML
+    private TableColumn<LinhaImportacao, String> colCategoria;
+    @FXML
     private TableColumn<LinhaImportacao, String> colStatus;
+
+    private final CategorizacaoIAService categorizacaoIAService = new CategorizacaoIAService();
 
     private Conta conta;
     private boolean importado;
@@ -61,8 +66,27 @@ public class OfxImportController {
         colData.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().transacao.data().toString()));
         colDescricao.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().transacao.descricao()));
         colValor.setCellValueFactory(c -> new SimpleStringProperty("R$ " + c.getValue().transacao.valor()));
+        colCategoria.setCellValueFactory(c -> c.getValue().categoriaSugeridaNome);
         colStatus
                 .setCellValueFactory(c -> new SimpleStringProperty(c.getValue().jaImportado ? "Já importado" : "Novo"));
+    }
+
+    @FXML
+    private void sugerirCategoriasIA() {
+        for (LinhaImportacao linha : tabelaTransacoes.getItems()) {
+            if (linha.jaImportado) continue;
+            Categoria.TipoCategoria tipo = linha.transacao.isEntrada()
+                    ? Categoria.TipoCategoria.ENTRADA
+                    : Categoria.TipoCategoria.SAIDA;
+            try {
+                Categoria sugerida = categorizacaoIAService.sugerirCategoria(linha.transacao.descricao(), tipo);
+                linha.categoriaSugerida = sugerida;
+                linha.categoriaSugeridaNome.set(sugerida != null ? sugerida.getNome() : "—");
+            } catch (Exception ex) {
+                new Alert(Alert.AlertType.ERROR, "Erro ao consultar a IA: " + ex.getMessage()).showAndWait();
+                return;
+            }
+        }
     }
 
     @FXML
@@ -99,17 +123,19 @@ public class OfxImportController {
         if (conta == null || tabelaTransacoes.getItems().isEmpty())
             return;
 
-        List<TransacaoOfx> selecionadas = tabelaTransacoes.getItems().stream()
-                .filter(linha -> linha.selecionado.get() && !linha.jaImportado)
-                .map(linha -> linha.transacao)
-                .collect(Collectors.toList());
+        Map<TransacaoOfx, Categoria> selecionadas = new HashMap<>();
+        for (LinhaImportacao linha : tabelaTransacoes.getItems()) {
+            if (linha.selecionado.get() && !linha.jaImportado) {
+                selecionadas.put(linha.transacao, linha.categoriaSugerida);
+            }
+        }
 
         if (selecionadas.isEmpty()) {
             new Alert(Alert.AlertType.INFORMATION, "Nenhuma transação nova selecionada.").showAndWait();
             return;
         }
 
-        int total = ofxImportService.importar(conta, selecionadas, null);
+        int total = ofxImportService.importar(conta, selecionadas);
         importado = total > 0;
         new Alert(Alert.AlertType.INFORMATION, total + " lançamento(s) importado(s) com sucesso.").showAndWait();
         fechar();
@@ -128,26 +154,13 @@ public class OfxImportController {
         final TransacaoOfx transacao;
         final boolean jaImportado;
         final SimpleBooleanProperty selecionado;
+        final SimpleStringProperty categoriaSugeridaNome = new SimpleStringProperty("—");
+        Categoria categoriaSugerida;
 
         LinhaImportacao(TransacaoOfx transacao, boolean jaImportado) {
             this.transacao = transacao;
             this.jaImportado = jaImportado;
             this.selecionado = new SimpleBooleanProperty(!jaImportado);
-        }
-    }
-
-    // no OfxImportController, um botão novo "Sugerir categorias (IA)":
-    @FXML
-    private void sugerirCategoriasIA() {
-        CategorizacaoIAService iaService = new CategorizacaoIAService();
-        for (LinhaImportacao linha : tabelaTransacoes.getItems()) {
-            if (linha.jaImportado)
-                continue;
-            Categoria.TipoCategoria tipo = linha.transacao.isEntrada()
-                    ? Categoria.TipoCategoria.ENTRADA
-                    : Categoria.TipoCategoria.SAIDA;
-            Categoria sugerida = iaService.sugerirCategoria(linha.transacao.descricao(), tipo);
-            linha.categoriaSugerida = sugerida;
         }
     }
 }

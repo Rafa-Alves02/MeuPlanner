@@ -42,6 +42,7 @@ public class NavbarController {
 
     public void marcarAtiva(String tela) {
         botoesPorTela.values().forEach(botao -> botao.getStyleClass().remove(CLASSE_ATIVA));
+        if (tela == null) return;
         Button ativo = botoesPorTela.get(tela);
         if (ativo != null) {
             ativo.getStyleClass().add(CLASSE_ATIVA);

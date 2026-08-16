@@ -3,6 +3,7 @@ package br.com.MeuPlanner.service;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import br.com.MeuPlanner.model.Categoria;
 import br.com.MeuPlanner.model.Conta;
@@ -31,19 +32,21 @@ public class OfxImportService {
         return itens;
     }
 
-    public int importar(Conta conta, List<TransacaoOfx> selecionadas, Categoria categoriaPadrao) {
+    public int importar(Conta conta, Map<TransacaoOfx, Categoria> selecionadas) {
         int importados = 0;
-        for (TransacaoOfx transacao : selecionadas) {
+        for (var entry : selecionadas.entrySet()) {
+            TransacaoOfx transacao = entry.getKey();
+            Categoria categoria = entry.getValue();
             if (jaFoiImportada(conta, transacao)) continue;
 
             if (transacao.isEntrada()) {
                 Entrada entrada = new Entrada(transacao.descricao(), transacao.valor(), transacao.data(),
-                        TipoRecorrencia.UNICA, conta, categoriaPadrao);
+                        TipoRecorrencia.UNICA, conta, categoria);
                 entrada.setFitidOfx(transacao.fitid());
                 entradaRepo.salvar(entrada);
             } else {
                 Gasto gasto = new Gasto(transacao.descricao(), transacao.valor().abs(), transacao.data(),
-                        TipoGasto.VARIAVEL, TipoRecorrencia.UNICA, conta, categoriaPadrao);
+                        TipoGasto.VARIAVEL, TipoRecorrencia.UNICA, conta, categoria);
                 gasto.setFitidOfx(transacao.fitid());
                 gastoRepo.salvar(gasto);
             }
