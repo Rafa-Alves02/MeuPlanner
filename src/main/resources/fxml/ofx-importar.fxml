@@ -5,7 +5,7 @@
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="br.com.MeuPlanner.app.OfxImportController"
-      styleClass="content" spacing="14" prefWidth="640" prefHeight="480">
+      styleClass="content" spacing="14" prefWidth="760" prefHeight="480">
     <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
 
     <Label text="// Importar OFX" styleClass="page-title"/>
@@ -23,8 +23,9 @@
             <TableColumn fx:id="colData"       text="Data"      prefWidth="90"/>
             <TableColumn fx:id="colDescricao"  text="Descrição" prefWidth="220"/>
             <TableColumn fx:id="colValor"      text="Valor"     prefWidth="100"/>
-            <TableColumn fx:id="colCategoria"  text="Categoria" prefWidth="130"/>
-            <TableColumn fx:id="colStatus"     text="Status"    prefWidth="120"/>
+            <TableColumn fx:id="colCategoria"  text="Categoria" prefWidth="150"/>
+            <TableColumn fx:id="colStatus"     text="Status"    prefWidth="110"/>
+            <TableColumn fx:id="colAcao"       text=""          prefWidth="90"/>
         </columns>
     </TableView>
 

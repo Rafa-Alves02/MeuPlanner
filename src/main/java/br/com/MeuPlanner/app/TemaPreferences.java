@@ -10,7 +10,7 @@ import java.util.Properties;
 public final class TemaPreferences {
 
     private static final Path ARQUIVO = Path.of(System.getProperty("user.home"), ".meuplanner", "ui.properties");
-    private static final String COR_PADRAO = "#cc1111";
+    private static final String COR_PADRAO = "#45f3ff";
 
     private TemaPreferences() {}
 

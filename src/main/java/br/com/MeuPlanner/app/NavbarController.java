@@ -6,33 +6,32 @@ import java.util.Map;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ColorPicker;
+import javafx.scene.control.MenuButton;
 import javafx.scene.paint.Color;
 
 public class NavbarController {
 
-    private static final String CLASSE_ATIVA = "nav-btn-ativo";
+    private static final String CLASSE_BTN_ATIVO = "nav-btn-ativo";
+    private static final String CLASSE_MENU_ATIVO = "nav-menu-ativo";
 
     @FXML private Button btnDashboard;
-    @FXML private Button btnContas;
-    @FXML private Button btnLancamentos;
-    @FXML private Button btnTransferencias;
-    @FXML private Button btnCategorias;
-    @FXML private Button btnMetas;
-    @FXML private Button btnRelatorios;
+    @FXML private MenuButton menuContas;
+    @FXML private MenuButton menuPerfil;
     @FXML private ColorPicker colorPickerAccent;
 
     private Map<String, Button> botoesPorTela;
+    private Map<String, MenuButton> menusPorTela;
 
     @FXML
     private void initialize() {
-        botoesPorTela = Map.of(
-                "dashboard", btnDashboard,
-                "contas", btnContas,
-                "lancamentos", btnLancamentos,
-                "transferencias", btnTransferencias,
-                "categorias", btnCategorias,
-                "metas", btnMetas,
-                "relatorios", btnRelatorios
+        botoesPorTela = Map.of("dashboard", btnDashboard);
+        menusPorTela = Map.of(
+                "contas", menuContas,
+                "lancamentos", menuContas,
+                "metas", menuContas,
+                "perfil", menuPerfil,
+                "relatorios", menuPerfil,
+                "categorias", menuPerfil
         );
 
         colorPickerAccent.setValue(Color.web(TemaPreferences.corAcentoSalva()));
@@ -42,12 +41,16 @@ public class NavbarController {
     }
 
     public void marcarAtiva(String tela) {
-        botoesPorTela.values().forEach(botao -> botao.getStyleClass().remove(CLASSE_ATIVA));
+        botoesPorTela.values().forEach(botao -> botao.getStyleClass().remove(CLASSE_BTN_ATIVO));
+        menuContas.getStyleClass().remove(CLASSE_MENU_ATIVO);
+        menuPerfil.getStyleClass().remove(CLASSE_MENU_ATIVO);
         if (tela == null) return;
-        Button ativo = botoesPorTela.get(tela);
-        if (ativo != null) {
-            ativo.getStyleClass().add(CLASSE_ATIVA);
-        }
+
+        Button botaoAtivo = botoesPorTela.get(tela);
+        if (botaoAtivo != null) botaoAtivo.getStyleClass().add(CLASSE_BTN_ATIVO);
+
+        MenuButton menuAtivo = menusPorTela.get(tela);
+        if (menuAtivo != null) menuAtivo.getStyleClass().add(CLASSE_MENU_ATIVO);
     }
 
     @FXML
@@ -74,11 +77,11 @@ public class NavbarController {
         }
     }
 
-    @FXML void irDashboard()      { SceneManager.navegarPara("dashboard"); }
-    @FXML void irContas()         { SceneManager.navegarPara("contas"); }
-    @FXML void irLancamentos()    { SceneManager.navegarPara("lancamentos"); }
-    @FXML void irTransferencias() { SceneManager.navegarPara("transferencias"); }
-    @FXML void irCategorias()     { SceneManager.navegarPara("categorias"); }
-    @FXML void irMetas()          { SceneManager.navegarPara("metas"); }
-    @FXML void irRelatorios()     { SceneManager.navegarPara("relatorios"); }
+    @FXML void irDashboard()   { SceneManager.navegarPara("dashboard"); }
+    @FXML void irContas()      { SceneManager.navegarPara("contas"); }
+    @FXML void irLancamentos() { SceneManager.navegarPara("lancamentos"); }
+    @FXML void irMetas()       { SceneManager.navegarPara("metas"); }
+    @FXML void irPerfil()      { SceneManager.navegarPara("perfil"); }
+    @FXML void irRelatorios()  { SceneManager.navegarPara("relatorios"); }
+    @FXML void irCategorias()  { SceneManager.navegarPara("categorias"); }
 }

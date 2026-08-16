@@ -4,10 +4,12 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import br.com.MeuPlanner.model.Categoria;
 import br.com.MeuPlanner.model.Conta;
 import br.com.MeuPlanner.ofx.TransacaoOfx;
+import br.com.MeuPlanner.service.CategoriaService;
 import br.com.MeuPlanner.service.CategorizacaoIAService;
 import br.com.MeuPlanner.service.OfxImportService;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -16,7 +18,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.CheckBoxTableCell;
@@ -45,8 +50,11 @@ public class OfxImportController {
     private TableColumn<LinhaImportacao, String> colCategoria;
     @FXML
     private TableColumn<LinhaImportacao, String> colStatus;
+    @FXML
+    private TableColumn<LinhaImportacao, Void> colAcao;
 
     private final CategorizacaoIAService categorizacaoIAService = new CategorizacaoIAService();
+    private final CategoriaService categoriaService = new CategoriaService();
 
     private Conta conta;
     private boolean importado;
@@ -69,6 +77,14 @@ public class OfxImportController {
         colCategoria.setCellValueFactory(c -> c.getValue().categoriaSugeridaNome);
         colStatus
                 .setCellValueFactory(c -> new SimpleStringProperty(c.getValue().jaImportado ? "Já importado" : "Novo"));
+        colAcao.setCellFactory(tc -> new TableCell<>() {
+            private final Button btn = new Button("Corrigir");
+            { btn.getStyleClass().add("btn-danger"); btn.setOnAction(e -> corrigirCategoria(getTableRow().getItem())); }
+            @Override protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : btn);
+            }
+        });
     }
 
     @FXML
@@ -79,14 +95,45 @@ public class OfxImportController {
                     ? Categoria.TipoCategoria.ENTRADA
                     : Categoria.TipoCategoria.SAIDA;
             try {
-                Categoria sugerida = categorizacaoIAService.sugerirCategoria(linha.transacao.descricao(), tipo);
-                linha.categoriaSugerida = sugerida;
-                linha.categoriaSugeridaNome.set(sugerida != null ? sugerida.getNome() : "—");
+                CategorizacaoIAService.Sugestao sugestao =
+                        categorizacaoIAService.sugerirCategoria(linha.transacao.descricao(), tipo);
+                aplicarSugestao(linha, sugestao.categoria(), sugestao.aprendida());
             } catch (Exception ex) {
                 new Alert(Alert.AlertType.ERROR, "Erro ao consultar a IA: " + ex.getMessage()).showAndWait();
                 return;
             }
         }
+    }
+
+    private void corrigirCategoria(LinhaImportacao linha) {
+        if (linha == null) return;
+
+        Categoria.TipoCategoria tipo = linha.transacao.isEntrada()
+                ? Categoria.TipoCategoria.ENTRADA
+                : Categoria.TipoCategoria.SAIDA;
+        List<Categoria> opcoes = tipo == Categoria.TipoCategoria.ENTRADA
+                ? categoriaService.listarEntradas()
+                : categoriaService.listarSaidas();
+        if (opcoes.isEmpty()) return;
+
+        Categoria valorInicial = linha.categoriaSugerida != null ? linha.categoriaSugerida : opcoes.get(0);
+        ChoiceDialog<Categoria> dialog = new ChoiceDialog<>(valorInicial, opcoes);
+        dialog.setTitle("Corrigir categoria");
+        dialog.setHeaderText(linha.transacao.descricao());
+        dialog.setContentText("Categoria correta:");
+
+        Optional<Categoria> escolha = dialog.showAndWait();
+        escolha.ifPresent(categoria -> {
+            categorizacaoIAService.corrigir(linha.transacao.descricao(), categoria);
+            aplicarSugestao(linha, categoria, true);
+        });
+    }
+
+    private void aplicarSugestao(LinhaImportacao linha, Categoria categoria, boolean aprendida) {
+        linha.categoriaSugerida = categoria;
+        linha.categoriaSugeridaNome.set(categoria != null
+                ? categoria.getNome() + (aprendida ? " (aprendida)" : "")
+                : "—");
     }
 
     @FXML

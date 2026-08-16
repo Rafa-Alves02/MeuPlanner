@@ -28,6 +28,15 @@ CREATE TABLE IF NOT EXISTS categorias (
     cor     VARCHAR(7) NOT NULL DEFAULT '#607D8B'
 );
 
+CREATE TABLE IF NOT EXISTS categorizacao_aprendida (
+                                                        id             BIGINT AUTO_INCREMENT PRIMARY KEY,
+                                                        padrao         VARCHAR(255) NOT NULL,
+                                                        categoria_id   BIGINT NOT NULL,
+                                                        atualizado_em  DATETIME DEFAULT CURRENT_TIMESTAMP,
+                                                        FOREIGN KEY (categoria_id) REFERENCES categorias(id),
+                                                        UNIQUE KEY uk_categorizacao_padrao (padrao)
+);
+
 CREATE TABLE IF NOT EXISTS entradas (
                                         id               BIGINT AUTO_INCREMENT PRIMARY KEY,
                                         descricao        VARCHAR(255) NOT NULL,
@@ -61,17 +70,6 @@ CREATE TABLE IF NOT EXISTS gastos (
     FOREIGN KEY (conta_id) REFERENCES contas(id),
     FOREIGN KEY (categoria_id) REFERENCES categorias(id),
     UNIQUE KEY uk_gastos_conta_fitid (conta_id, fitid_ofx)
-);
-
-CREATE TABLE IF NOT EXISTS transferencias (
-                                              id               BIGINT AUTO_INCREMENT PRIMARY KEY,
-                                              conta_origem_id  BIGINT NOT NULL,
-                                              conta_destino_id BIGINT NOT NULL,
-                                              valor            DECIMAL(15,2) NOT NULL,
-                                              data_transferencia DATE NOT NULL,
-                                              descricao        VARCHAR(255),
-                                              FOREIGN KEY (conta_origem_id) REFERENCES contas(id),
-                                              FOREIGN KEY (conta_destino_id) REFERENCES contas(id)
 );
 
 CREATE TABLE IF NOT EXISTS fechamento_mensal (
