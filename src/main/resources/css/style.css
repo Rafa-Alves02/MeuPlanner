@@ -1,7 +1,21 @@
 .root-pane {
     -accent-cor: #45f3ff;
     -fx-background-color: #0b0c10;
-    -fx-font-family: "Cascadia Mono", "Consolas", "JetBrains Mono", monospace;
+    -fx-font-family: "Consolas", "Cascadia Mono", "JetBrains Mono", monospace;
+}
+
+/*
+ * AtlantaFX (PrimerDark) declara -fx-font-family explicitamente nesses
+ * seletores. Herdar a fonte monoespaçada de .root-pane não basta — uma
+ * declaração explícita, mesmo vindo do user-agent stylesheet, vence uma
+ * propriedade herdada. Repetimos a fonte aqui pra ela realmente prevalecer.
+ */
+.label, .text, .button, .toggle-button, .check-box, .radio-button,
+.text-field, .text-area, .password-field, .combo-box, .date-picker,
+.table-view, .table-view .cell, .list-view, .list-cell,
+.menu-button, .menu-item, .context-menu,
+.chart, .chart-legend, .axis, .tooltip, .titled-pane, .tab {
+    -fx-font-family: "Consolas", "Cascadia Mono", "JetBrains Mono", monospace;
 }
 
 .navbar {
