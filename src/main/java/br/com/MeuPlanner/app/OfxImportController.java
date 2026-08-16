@@ -4,8 +4,10 @@ import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import br.com.MeuPlanner.model.Categoria;
 import br.com.MeuPlanner.model.Conta;
 import br.com.MeuPlanner.ofx.TransacaoOfx;
+import br.com.MeuPlanner.service.CategorizacaoIAService;
 import br.com.MeuPlanner.service.OfxImportService;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -24,14 +26,22 @@ public class OfxImportController {
 
     private final OfxImportService ofxImportService = new OfxImportService();
 
-    @FXML private Label lblArquivo;
-    @FXML private Label lblResumo;
-    @FXML private TableView<LinhaImportacao> tabelaTransacoes;
-    @FXML private TableColumn<LinhaImportacao, Boolean> colSelecionar;
-    @FXML private TableColumn<LinhaImportacao, String> colData;
-    @FXML private TableColumn<LinhaImportacao, String> colDescricao;
-    @FXML private TableColumn<LinhaImportacao, String> colValor;
-    @FXML private TableColumn<LinhaImportacao, String> colStatus;
+    @FXML
+    private Label lblArquivo;
+    @FXML
+    private Label lblResumo;
+    @FXML
+    private TableView<LinhaImportacao> tabelaTransacoes;
+    @FXML
+    private TableColumn<LinhaImportacao, Boolean> colSelecionar;
+    @FXML
+    private TableColumn<LinhaImportacao, String> colData;
+    @FXML
+    private TableColumn<LinhaImportacao, String> colDescricao;
+    @FXML
+    private TableColumn<LinhaImportacao, String> colValor;
+    @FXML
+    private TableColumn<LinhaImportacao, String> colStatus;
 
     private Conta conta;
     private boolean importado;
@@ -51,7 +61,8 @@ public class OfxImportController {
         colData.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().transacao.data().toString()));
         colDescricao.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().transacao.descricao()));
         colValor.setCellValueFactory(c -> new SimpleStringProperty("R$ " + c.getValue().transacao.valor()));
-        colStatus.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().jaImportado ? "Já importado" : "Novo"));
+        colStatus
+                .setCellValueFactory(c -> new SimpleStringProperty(c.getValue().jaImportado ? "Já importado" : "Novo"));
     }
 
     @FXML
@@ -60,7 +71,8 @@ public class OfxImportController {
         chooser.setTitle("Selecionar arquivo OFX");
         chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Arquivos OFX", "*.ofx"));
         File arquivo = chooser.showOpenDialog(tabelaTransacoes.getScene().getWindow());
-        if (arquivo == null) return;
+        if (arquivo == null)
+            return;
 
         try {
             List<OfxImportService.ItemImportacao> itens = ofxImportService.lerParaRevisao(arquivo, conta);
@@ -84,7 +96,8 @@ public class OfxImportController {
 
     @FXML
     private void confirmarImportacao() {
-        if (conta == null || tabelaTransacoes.getItems().isEmpty()) return;
+        if (conta == null || tabelaTransacoes.getItems().isEmpty())
+            return;
 
         List<TransacaoOfx> selecionadas = tabelaTransacoes.getItems().stream()
                 .filter(linha -> linha.selecionado.get() && !linha.jaImportado)
@@ -120,6 +133,21 @@ public class OfxImportController {
             this.transacao = transacao;
             this.jaImportado = jaImportado;
             this.selecionado = new SimpleBooleanProperty(!jaImportado);
+        }
+    }
+
+    // no OfxImportController, um botão novo "Sugerir categorias (IA)":
+    @FXML
+    private void sugerirCategoriasIA() {
+        CategorizacaoIAService iaService = new CategorizacaoIAService();
+        for (LinhaImportacao linha : tabelaTransacoes.getItems()) {
+            if (linha.jaImportado)
+                continue;
+            Categoria.TipoCategoria tipo = linha.transacao.isEntrada()
+                    ? Categoria.TipoCategoria.ENTRADA
+                    : Categoria.TipoCategoria.SAIDA;
+            Categoria sugerida = iaService.sugerirCategoria(linha.transacao.descricao(), tipo);
+            linha.categoriaSugerida = sugerida;
         }
     }
 }
