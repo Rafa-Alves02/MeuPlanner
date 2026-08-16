@@ -5,7 +5,7 @@
 
 <VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="br.com.MeuPlanner.app.OfxImportController"
-      styleClass="content" spacing="14" prefWidth="640" prefHeight="480">
+      styleClass="content" spacing="14" prefWidth="720" prefHeight="500">
     <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
 
     <Label text="// Importar OFX" styleClass="page-title"/>
@@ -13,15 +13,17 @@
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Button text="Escolher arquivo..." onAction="#escolherArquivo" styleClass="btn-primary"/>
         <Label fx:id="lblArquivo" text="Nenhum arquivo selecionado" styleClass="form-label"/>
+        <Button text="Sugerir categorias (IA)" onAction="#sugerirCategoriasIA" styleClass="btn-danger"/>
     </HBox>
 
     <TableView fx:id="tabelaTransacoes" editable="true" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="colSelecionar" text=""         prefWidth="36"/>
-            <TableColumn fx:id="colData"       text="Data"      prefWidth="90"/>
-            <TableColumn fx:id="colDescricao"  text="Descrição" prefWidth="270"/>
-            <TableColumn fx:id="colValor"      text="Valor"     prefWidth="100"/>
-            <TableColumn fx:id="colStatus"     text="Status"    prefWidth="120"/>
+            <TableColumn fx:id="colSelecionar" text=""          prefWidth="36"/>
+            <TableColumn fx:id="colData"       text="Data"       prefWidth="90"/>
+            <TableColumn fx:id="colDescricao"  text="Descrição"  prefWidth="230"/>
+            <TableColumn fx:id="colValor"      text="Valor"      prefWidth="100"/>
+            <TableColumn fx:id="colCategoria"  text="Categoria"  prefWidth="150"/>
+            <TableColumn fx:id="colStatus"     text="Status"     prefWidth="120"/>
         </columns>
     </TableView>
 
