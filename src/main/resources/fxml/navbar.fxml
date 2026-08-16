@@ -23,4 +23,5 @@
     <Region HBox.hgrow="ALWAYS"/>
 
     <ColorPicker fx:id="colorPickerAccent" styleClass="color-picker-accent" onAction="#trocarCor"/>
+    <Button text="Sair" onAction="#sair" styleClass="btn-danger"/>
 </HBox>

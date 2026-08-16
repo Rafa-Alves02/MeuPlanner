@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
 <?import javafx.geometry.Insets?>
 
 <VBox xmlns:fx="http://javafx.com/fxml"
@@ -25,9 +26,23 @@
         </VBox>
     </HBox>
 
+    <HBox spacing="20">
+        <VBox styleClass="card" spacing="6" prefWidth="340">
+            <Label text="Gastos por Categoria (mês atual)" styleClass="card-label"/>
+            <PieChart fx:id="graficoGastosCategoria" legendVisible="true" labelsVisible="false" prefHeight="260"/>
+        </VBox>
+        <VBox styleClass="card" spacing="6" HBox.hgrow="ALWAYS">
+            <Label text="Saldo dos Últimos 6 Meses" styleClass="card-label"/>
+            <BarChart fx:id="graficoSaldoMensal" prefHeight="260" legendVisible="false">
+                <xAxis><CategoryAxis label="Mês"/></xAxis>
+                <yAxis><NumberAxis label="R$"/></yAxis>
+            </BarChart>
+        </VBox>
+    </HBox>
+
     <Label text="Alertas Ativos" styleClass="section-title"/>
-    <ListView fx:id="listaAlertas" prefHeight="130"/>
+    <ListView fx:id="listaAlertas" prefHeight="110"/>
 
     <Label text="Metas em Andamento" styleClass="section-title"/>
-    <ListView fx:id="listaMetas" prefHeight="130"/>
+    <ListView fx:id="listaMetas" prefHeight="110"/>
 </VBox>

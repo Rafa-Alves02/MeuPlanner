@@ -1,14 +1,12 @@
 package br.com.MeuPlanner.app;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 import javafx.animation.FadeTransition;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -23,15 +21,6 @@ public class SceneManager {
 
     public static void init(Stage primaryStage) throws IOException {
         stage = primaryStage;
-        stage.setTitle("MeuPlanner");
-        stage.setMinWidth(960);
-        stage.setMinHeight(640);
-
-        try (InputStream icone = SceneManager.class.getResourceAsStream("/images/icon.png")) {
-            if (icone != null) {
-                stage.getIcons().add(new Image(icone));
-            }
-        }
 
         FXMLLoader shellLoader = new FXMLLoader(SceneManager.class.getResource("/fxml/app-shell.fxml"));
         shellRoot = shellLoader.load();
