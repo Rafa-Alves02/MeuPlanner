@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="br.com.MeuPlanner.app.PluggyConectarController"
+      styleClass="content" spacing="16" prefWidth="480" prefHeight="420">
+    <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
+
+    <Label text="// Conectar Open Finance" styleClass="page-title"/>
+    <Label fx:id="lblConta" text="" styleClass="form-label"/>
+
+    <Label text="1. Abra a conexão com o banco no navegador" styleClass="section-title"/>
+    <Button text="Abrir conexão no navegador" onAction="#abrirNavegador" styleClass="btn-primary"/>
+
+    <Label text="2. Depois de conectar, cole o Item ID mostrado no final" styleClass="section-title"/>
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <TextField fx:id="txtItemId" promptText="Item ID" HBox.hgrow="ALWAYS"/>
+        <Button text="Buscar contas" onAction="#buscarContas" styleClass="btn-primary"/>
+    </HBox>
+
+    <Label text="3. Escolha a conta pra vincular" styleClass="section-title"/>
+    <ListView fx:id="listaContas" VBox.vgrow="ALWAYS"/>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Label fx:id="lblStatus" text="" styleClass="form-label" HBox.hgrow="ALWAYS"/>
+        <Button text="Cancelar" onAction="#cancelar" styleClass="btn-danger"/>
+        <Button text="Vincular" onAction="#vincular" styleClass="btn-primary"/>
+    </HBox>
+</VBox>

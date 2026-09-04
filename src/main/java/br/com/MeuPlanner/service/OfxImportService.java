@@ -24,7 +24,10 @@ public class OfxImportService {
     public record ItemImportacao(TransacaoOfx transacao, boolean jaImportado) {}
 
     public List<ItemImportacao> lerParaRevisao(File arquivo, Conta conta) {
-        List<TransacaoOfx> transacoes = OfxParser.parse(arquivo);
+        return revisar(OfxParser.parse(arquivo), conta);
+    }
+
+    public List<ItemImportacao> revisar(List<TransacaoOfx> transacoes, Conta conta) {
         List<ItemImportacao> itens = new ArrayList<>(transacoes.size());
         for (TransacaoOfx transacao : transacoes) {
             itens.add(new ItemImportacao(transacao, jaFoiImportada(conta, transacao)));

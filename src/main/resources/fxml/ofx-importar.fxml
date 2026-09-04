@@ -8,7 +8,7 @@
       styleClass="content" spacing="14" prefWidth="760" prefHeight="480">
     <padding><Insets top="20" right="20" bottom="20" left="20"/></padding>
 
-    <Label text="// Importar OFX" styleClass="page-title"/>
+    <Label text="// Importar Lançamentos" styleClass="page-title"/>
 
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Button text="Escolher arquivo..." onAction="#escolherArquivo" styleClass="btn-primary"/>

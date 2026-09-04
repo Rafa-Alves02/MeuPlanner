@@ -27,13 +27,16 @@ public class ContaRepository extends BaseRepository {
     }
 
     public void atualizar(Conta conta) {
-        String sql = "UPDATE contas SET nome = ?, tipo = ?, banco = ?, saldo_atual = ? WHERE id = ?";
+        String sql = "UPDATE contas SET nome = ?, tipo = ?, banco = ?, saldo_atual = ?, "
+                + "pluggy_item_id = ?, pluggy_account_id = ? WHERE id = ?";
         executarUpdate(sql, stmt -> {
             stmt.setString(1, conta.getNome());
             stmt.setString(2, conta.getTipo().name());
             stmt.setString(3, conta.getBanco());
             stmt.setBigDecimal(4, conta.getSaldoAtual());
-            stmt.setLong(5, conta.getId());
+            stmt.setString(5, conta.getPluggyItemId());
+            stmt.setString(6, conta.getPluggyAccountId());
+            stmt.setLong(7, conta.getId());
         });
     }
 
@@ -60,6 +63,8 @@ public class ContaRepository extends BaseRepository {
         conta.setBanco(rs.getString("banco"));
         conta.setSaldoInicial(rs.getBigDecimal("saldo_inicial"));
         conta.setSaldoAtual(rs.getBigDecimal("saldo_atual"));
+        conta.setPluggyItemId(rs.getString("pluggy_item_id"));
+        conta.setPluggyAccountId(rs.getString("pluggy_account_id"));
         return conta;
     }
 }

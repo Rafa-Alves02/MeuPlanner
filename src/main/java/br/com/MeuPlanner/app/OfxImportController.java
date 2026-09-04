@@ -12,6 +12,7 @@ import br.com.MeuPlanner.ofx.TransacaoOfx;
 import br.com.MeuPlanner.service.CategoriaService;
 import br.com.MeuPlanner.service.CategorizacaoIAService;
 import br.com.MeuPlanner.service.OfxImportService;
+import br.com.MeuPlanner.service.PluggyImportService;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -55,6 +56,7 @@ public class OfxImportController {
 
     private final CategorizacaoIAService categorizacaoIAService = new CategorizacaoIAService();
     private final CategoriaService categoriaService = new CategoriaService();
+    private final PluggyImportService pluggyImportService = new PluggyImportService();
 
     private Conta conta;
     private boolean importado;
@@ -146,17 +148,29 @@ public class OfxImportController {
             return;
 
         try {
-            List<OfxImportService.ItemImportacao> itens = ofxImportService.lerParaRevisao(arquivo, conta);
-            ObservableList<LinhaImportacao> linhas = FXCollections.observableArrayList();
-            for (var item : itens) {
-                linhas.add(new LinhaImportacao(item.transacao(), item.jaImportado()));
-            }
-            tabelaTransacoes.setItems(linhas);
+            popular(ofxImportService.lerParaRevisao(arquivo, conta));
             lblArquivo.setText(arquivo.getName());
-            atualizarResumo();
         } catch (Exception ex) {
             new Alert(Alert.AlertType.ERROR, "Erro ao ler o OFX: " + ex.getMessage()).showAndWait();
         }
+    }
+
+    public void carregarDoOpenFinance() {
+        try {
+            popular(pluggyImportService.lerParaRevisao(conta));
+            lblArquivo.setText("Open Finance — sincronizado agora");
+        } catch (Exception ex) {
+            new Alert(Alert.AlertType.ERROR, "Erro ao sincronizar com o Open Finance: " + ex.getMessage()).showAndWait();
+        }
+    }
+
+    private void popular(List<OfxImportService.ItemImportacao> itens) {
+        ObservableList<LinhaImportacao> linhas = FXCollections.observableArrayList();
+        for (var item : itens) {
+            linhas.add(new LinhaImportacao(item.transacao(), item.jaImportado()));
+        }
+        tabelaTransacoes.setItems(linhas);
+        atualizarResumo();
     }
 
     private void atualizarResumo() {

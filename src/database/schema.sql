@@ -18,7 +18,9 @@ CREATE TABLE IF NOT EXISTS contas (
     banco           VARCHAR(50),
     saldo_inicial   DECIMAL(15,2) NOT NULL DEFAULT 0.00,
     saldo_atual     DECIMAL(15,2) NOT NULL DEFAULT 0.00,
-    criado_em       DATETIME DEFAULT CURRENT_TIMESTAMP
+    criado_em       DATETIME DEFAULT CURRENT_TIMESTAMP,
+    pluggy_item_id    VARCHAR(64),
+    pluggy_account_id VARCHAR(64)
 );
 
 CREATE TABLE IF NOT EXISTS categorias (

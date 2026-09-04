@@ -69,10 +69,12 @@ public class ContasController {
         colSaldo.setCellValueFactory(c -> new SimpleStringProperty("R$ " + c.getValue().getSaldoAtual()));
         colAcoes.setCellFactory(tc -> new TableCell<>() {
             private final Button btnOfx = new Button("OFX");
+            private final Button btnOpenFinance = new Button();
             private final Button btnExcluir = new Button("Excluir");
-            private final HBox botoes = new HBox(6, btnOfx, btnExcluir);
+            private final HBox botoes = new HBox(6, btnOfx, btnOpenFinance, btnExcluir);
             {
                 btnOfx.setOnAction(e -> abrirImportarOfx(getTableView().getItems().get(getIndex())));
+                btnOpenFinance.setOnAction(e -> abrirOpenFinance(getTableView().getItems().get(getIndex())));
                 btnExcluir.getStyleClass().add("btn-danger");
                 btnExcluir.setOnAction(e -> {
                     Conta conta = getTableView().getItems().get(getIndex());
@@ -82,7 +84,13 @@ public class ContasController {
             }
             @Override protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
-                setGraphic(empty ? null : botoes);
+                if (empty) {
+                    setGraphic(null);
+                    return;
+                }
+                Conta conta = getTableView().getItems().get(getIndex());
+                btnOpenFinance.setText(conta.isConectadaAoOpenFinance() ? "Sincronizar" : "Open Finance");
+                setGraphic(botoes);
             }
         });
         carregarTabela();
@@ -108,16 +116,54 @@ public class ContasController {
         lblSaldoGeral.setText("Saldo Geral: R$ " + contaService.saldoTotalGeral());
     }
 
+    private void abrirOpenFinance(Conta conta) {
+        if (!conta.isConectadaAoOpenFinance()) {
+            abrirConectarPluggy(conta);
+        } else {
+            abrirImportarOfx(conta, true);
+        }
+    }
+
+    private void abrirConectarPluggy(Conta conta) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/pluggy-conectar.fxml"));
+            Parent raiz = loader.load();
+            PluggyConectarController controller = loader.getController();
+            controller.setConta(conta);
+
+            Stage modal = new Stage();
+            modal.initModality(Modality.APPLICATION_MODAL);
+            modal.setTitle("Conectar Open Finance — " + conta.getNome());
+            Scene scene = new Scene(raiz);
+            scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
+            modal.setScene(scene);
+            modal.showAndWait();
+
+            if (controller.isVinculado()) {
+                carregarTabela();
+            }
+        } catch (IOException ex) {
+            new Alert(Alert.AlertType.ERROR, "Erro ao abrir conexão com Open Finance: " + ex.getMessage()).show();
+        }
+    }
+
     private void abrirImportarOfx(Conta conta) {
+        abrirImportarOfx(conta, false);
+    }
+
+    private void abrirImportarOfx(Conta conta, boolean sincronizarOpenFinance) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/fxml/ofx-importar.fxml"));
             Parent raiz = loader.load();
             OfxImportController controller = loader.getController();
             controller.setConta(conta);
+            if (sincronizarOpenFinance) {
+                controller.carregarDoOpenFinance();
+            }
 
             Stage modal = new Stage();
             modal.initModality(Modality.APPLICATION_MODAL);
-            modal.setTitle("Importar OFX — " + conta.getNome());
+            modal.setTitle((sincronizarOpenFinance ? "Sincronizar Open Finance — " : "Importar OFX — ") + conta.getNome());
             Scene scene = new Scene(raiz);
             scene.getStylesheets().add(getClass().getResource("/css/style.css").toExternalForm());
             modal.setScene(scene);
@@ -127,7 +173,7 @@ public class ContasController {
                 carregarTabela();
             }
         } catch (IOException ex) {
-            new Alert(Alert.AlertType.ERROR, "Erro ao abrir importador de OFX: " + ex.getMessage()).show();
+            new Alert(Alert.AlertType.ERROR, "Erro ao abrir importador: " + ex.getMessage()).show();
         }
     }
 }

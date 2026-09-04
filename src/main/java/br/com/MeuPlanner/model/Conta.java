@@ -15,6 +15,8 @@ public class Conta {
     private BigDecimal saldoInicial;
     private BigDecimal saldoAtual;
     private LocalDate criadoEm;
+    private String pluggyItemId;
+    private String pluggyAccountId;
 
     public Conta() {
     }
@@ -81,6 +83,26 @@ public class Conta {
 
     public void setCriadoEm(LocalDate criadoEm) {
         this.criadoEm = criadoEm;
+    }
+
+    public String getPluggyItemId() {
+        return pluggyItemId;
+    }
+
+    public void setPluggyItemId(String pluggyItemId) {
+        this.pluggyItemId = pluggyItemId;
+    }
+
+    public String getPluggyAccountId() {
+        return pluggyAccountId;
+    }
+
+    public void setPluggyAccountId(String pluggyAccountId) {
+        this.pluggyAccountId = pluggyAccountId;
+    }
+
+    public boolean isConectadaAoOpenFinance() {
+        return pluggyAccountId != null && !pluggyAccountId.isBlank();
     }
 
     @Override
